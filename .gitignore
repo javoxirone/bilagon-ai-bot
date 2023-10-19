@@ -1,0 +1,29 @@
+# Virtual environment
+venv/
+env/
+
+# Byte-compiled / optimized Python files
+__pycache__/
+*.pyc
+
+# Local development settings
+.env
+
+# IDE-specific files/directories
+.idea/
+.vscode/
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Compiled Python files
+*.pyc
+
+# SQLite database file
+*.sqlite
+
+# Dependency directories
+__pycache__/
+.pytest_cache/
+node_modules/
