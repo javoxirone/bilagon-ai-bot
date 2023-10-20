@@ -42,13 +42,13 @@ def get_new_chat_keyboard(lang):
 def get_gpt3_payment_keyboard(lang):
     buttons = {
         "uz": types.InlineKeyboardButton(
-                text="🔥 Premium tarifga o'tish 🔥", callback_data='buy_monthly_gpt3'
+                text="🔥 Premium tarifga o'tish 🔥", callback_data='buy_premium_gpt3'
             ),
         "ru": types.InlineKeyboardButton(
-                text="🔥 Перейти на тариф Премиум 🔥", callback_data='buy_monthly_gpt3'
+                text="🔥 Перейти на тариф Премиум 🔥", callback_data='buy_premium_gpt3'
             ),
         "en": types.InlineKeyboardButton(
-                text="🔥 Switch to Premium 🔥", callback_data='buy_monthly_gpt3'
+                text="🔥 Switch to Premium 🔥", callback_data='buy_premium_gpt3'
             ),
     }
     button = [[buttons[lang]]]

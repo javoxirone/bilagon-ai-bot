@@ -164,3 +164,54 @@ def get_gpt3_payment_successful_message(lang):
         'en': "Payment completed successfully ✅"
     }
     return message[lang]
+
+
+def get_settings_command_message(tariff, requests_num, expiration_date, lang):
+    message = {
+        'uz': f"Tarif: <b>{tariff}</b>\n"
+              f"So'rovlar soni: <b>{requests_num}</b>\n"
+              f"Tugash vaqti: <b>{expiration_date}</b>\n"
+              f"Botning tili: <b>{lang}</b>\n\n"
+              f"<b>Premium foydalanuvchiga aylaning va checksiz so'rovlarga ega bo'ling!</b>",
+
+        'ru': f"Тариф: <b>{tariff}</b>\n"
+              f"Количество запросов: <b>{requests_num}</b>\n"
+              f"Дата окончания: <b>{expiration_date}</b>\n"
+              f"Язык бота: <b>{lang}</b>\n\n"
+              f"<b>Станьте Премиум-пользователем, чтобы получать неограниченное количество запросов!</b>",
+
+        'en': f"Tariff: <b>{tariff}</b>\n"
+              f"Number of requests: <b>{requests_num}</b>\n"
+              f"Expiration date: <b>{expiration_date}</b>\n"
+              f"Bot Language: <b>{lang}</b>\n\n"
+              f"<b>Become Premium user to get unlimited requests!</b>"
+    }
+    return message[lang]
+
+
+def get_settings_command_premium_user_message(tariff, requests_num, expiration_date, lang):
+    message = {
+        'uz': f"Tarif: <b>{tariff}</b>\n"
+              f"So'rovlar soni: <b>{requests_num}</b>\n"
+              f"Tugash vaqti: <b>{expiration_date}</b>\n"
+              f"Botning tili: <b>{lang}</b>\n\n",
+
+        'ru': f"Тариф: <b>{tariff}</b>\n"
+              f"Количество запросов: <b>{requests_num}</b>\n"
+              f"Дата окончания: <b>{expiration_date}</b>\n"
+              f"Язык бота: <b>{lang}</b>\n\n",
+
+        'en': f"Tariff: <b>{tariff}</b>\n"
+              f"Number of requests: <b>{requests_num}</b>\n"
+              f"Expiration date: <b>{expiration_date}</b>\n"
+              f"Bot Language: <b>{lang}</b>\n\n",
+    }
+    return message[lang]
+
+def get_premium_requests_num_message(lang):
+    message = {
+        'uz': "Cheklanmagan",
+        'ru': "Неограниченный",
+        'en': "Unlimited"
+    }
+    return message[lang]

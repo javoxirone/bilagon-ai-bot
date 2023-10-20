@@ -1,4 +1,7 @@
 import sqlite3
+from datetime import datetime, timedelta
+
+
 
 class UserDatabase:
     def __init__(self, db_name=None):
@@ -7,7 +10,6 @@ class UserDatabase:
         self.create_table()
 
     def create_table(self):
-        # Create a 'users' table with columns for user information, subscriptions, and language.
         cursor = self.conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -18,28 +20,33 @@ class UserDatabase:
                 last_name TEXT,
                 has_premium_gpt3 BOOLEAN,
                 has_premium_gpt4 BOOLEAN,
-                gpt3_token INTEGER,
+                gpt3_requests_num INTEGER,
                 gpt4_token INTEGER,
-                language TEXT
+                language TEXT,
+                gpt3_requests_expire_datetime DATETIME,
+                gpt3_premium_purchase_datetime DATETIME
             )
         ''')
         self.conn.commit()
 
     def add_user(self, telegram_id, username, first_name, last_name, language):
-        # Add a new user to the database with default GPT-3 tokens set to 5.
         cursor = self.conn.cursor()
+        now = datetime.now()
+        expire_datetime = now + timedelta(hours=24)
         cursor.execute('''
             INSERT INTO users (telegram_id, username, first_name, last_name, 
-                has_premium_gpt3, has_premium_gpt4, gpt3_token, gpt4_token, language)
-            VALUES (?, ?, ?, ?, 0, 0, 5, 0, ?)
-        ''', (telegram_id, username, first_name, last_name, language))
+                has_premium_gpt3, has_premium_gpt4, gpt3_requests_num, gpt4_token, language, gpt3_requests_expire_datetime, gpt3_premium_purchase_datetime)
+            VALUES (?, ?, ?, ?, 0, 0, 5, 0, ?, ?, NULL)
+        ''', (telegram_id, username, first_name, last_name, language, expire_datetime))
         self.conn.commit()
 
     def get_user_by_telegram_id(self, telegram_id):
-        # Retrieve user information by Telegram ID as a dictionary.
+        from utils import format_datetime
+
         cursor = self.conn.cursor()
         cursor.execute('SELECT * FROM users WHERE telegram_id = ?', (telegram_id,))
         user_data = cursor.fetchone()
+
         if user_data:
             user_info = {
                 "telegram_id": user_data[1],
@@ -48,9 +55,11 @@ class UserDatabase:
                 "last_name": user_data[4],
                 "has_premium_gpt3": bool(user_data[5]),
                 "has_premium_gpt4": bool(user_data[6]),
-                "gpt3_token": user_data[7],
+                "gpt3_requests_num": user_data[7],
                 "gpt4_token": user_data[8],
-                "language": user_data[9]
+                "language": user_data[9],
+                "gpt3_requests_expire_datetime": format_datetime(user_data[10]),
+                "gpt3_premium_purchase_datetime": format_datetime(user_data[11]),
             }
             return user_info
         else:
@@ -70,7 +79,7 @@ class UserDatabase:
                 "last_name": user_data[4],
                 "has_premium_gpt3": bool(user_data[5]),
                 "has_premium_gpt4": bool(user_data[6]),
-                "gpt3_token": user_data[7],
+                "gpt3_requests_num": user_data[7],
                 "gpt4_token": user_data[8],
                 "language": user_data[9]
             }
@@ -89,7 +98,7 @@ class UserDatabase:
         # Update a user's subscription and token.
         cursor = self.conn.cursor()
         if subscription_type == "premium_gpt3":
-            cursor.execute('UPDATE users SET has_premium_gpt3 = 1, gpt3_token = ? WHERE telegram_id = ?',
+            cursor.execute('UPDATE users SET has_premium_gpt3 = 1, gpt3_requests_num = ? WHERE telegram_id = ?',
                            (token, telegram_id))
         elif subscription_type == "premium_gpt4":
             cursor.execute('UPDATE users SET has_premium_gpt4 = 1, gpt4_token = ? WHERE telegram_id = ?',
@@ -99,7 +108,7 @@ class UserDatabase:
     def update_tokens(self, telegram_id, model, tokens):
         cursor = self.conn.cursor()
         if model == "gpt3":
-            cursor.execute('UPDATE users SET gpt3_token = ? WHERE telegram_id = ?', (tokens, telegram_id))
+            cursor.execute('UPDATE users SET gpt3_requests_num = ? WHERE telegram_id = ?', (tokens, telegram_id))
         elif model == "gpt4":
             cursor.execute('UPDATE users SET gpt4_token = ? WHERE telegram_id = ?', (tokens, telegram_id))
         self.conn.commit()
@@ -121,6 +130,19 @@ class UserDatabase:
         if result:
             return bool(result[0])
         return False
+
+    def set_gpt3_requests_expire_datetime(self, telegram_id, expire_datetime):
+        cursor = self.conn.cursor()
+        cursor.execute('UPDATE users SET gpt3_requests_expire_datetime = ? WHERE telegram_id = ?',
+                       (expire_datetime, telegram_id))
+        self.conn.commit()
+
+    def set_gpt3_premium_purchase_datetime(self, telegram_id, purchase_datetime):
+        cursor = self.conn.cursor()
+        cursor.execute('UPDATE users SET gpt3_premium_purchase_datetime = ? WHERE telegram_id = ?',
+                       (purchase_datetime, telegram_id))
+        self.conn.commit()
+
 
     def close(self):
         # Close the database connection.
