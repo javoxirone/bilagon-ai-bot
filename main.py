@@ -174,7 +174,7 @@ async def safe_edit_message_text(
     except Exception as e:
         logging.error(f"Failed to edit message text: {e}")
 
-import openai
+# TODO: fix bug with history of conversation
 @dp.message()
 async def message_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
@@ -186,18 +186,9 @@ async def message_handler(message: Message) -> None:
         language = user["language"]
         bot_message = await message.reply(get_user_prompt_message(language), parse_mode=None)
 
-        openai.api_key = os.getenv("OPENAI_API")
-        result = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            max_tokens=2000,
-            messages=[
-                {
-                    "role": "user",
-                    "content": message.text
-                }
-            ],
-            stream=True  # Add this optional property.
-        )
+        messages = gpt.user_histories.get(telegram_id, [])
+        messages.append({"role": "user", "content": message.text})
+        result = gpt.generate_text(max_tokens=2000, messages=messages)
         text = ""
         counter = 0
         for chunk in result:
@@ -207,13 +198,9 @@ async def message_handler(message: Message) -> None:
                 await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=None)
                 counter = 0
             counter += 1
+
+        gpt.update_user_histories(telegram_id, message.text, text)
         await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=ParseMode.MARKDOWN, reply_markup=get_new_chat_keyboard(language))
-        #     print(
-        #         chunk.choices[0].delta.get("content", ""),
-        #         end="",
-        #         flush=True
-        #     )
-        # print()
 
         # if not user['has_premium_gpt3'] and user['gpt3_requests_num'] > 0:
         #     tokens = user['gpt3_requests_num'] - 1
