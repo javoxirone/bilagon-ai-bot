@@ -1,3 +1,6 @@
+import re
+import time
+
 from dotenv import load_dotenv
 from gpt import OpenAIAPI
 from utils import initialize_user, get_user_language_by_telegram_id
@@ -151,8 +154,16 @@ async def process_callback_buy_monthly_gpt3(callback_query: CallbackQuery):
     if is_registered_user:
         pass
 
+async def get_message_by_message_id(chat_id, message_id):
+    try:
+        # Use the bot.get_message() method to get the message by chat_id and message_id
+        message = await bot.get_message(chat_id, message_id)
+        return message.text
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None
 
-
+import openai
 @dp.message()
 async def message_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
@@ -162,6 +173,43 @@ async def message_handler(message: Message) -> None:
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         language = user["language"]
+        await message.reply(get_user_prompt_message(language), parse_mode=None)
+
+        openai.api_key = os.getenv("OPENAI_API")
+        result = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            max_tokens=2000,
+            messages=[
+                {
+                    "role": "user",
+                    "content": message.text
+                }
+            ],
+            stream=True  # Add this optional property.
+        )
+        text = ""
+        for chunk in result:
+
+            text += chunk.choices[0].delta.get("content", "")
+
+            if not text:
+                continue
+            try:
+                await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id + 1, text=text,parse_mode=None)
+            except Exception as e:
+                print(e)
+        try:
+            await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id + 1, text=text,
+                                        parse_mode=ParseMode.MARKDOWN, reply_markup=get_new_chat_keyboard(language))
+        except Exception as e:
+            print(e)
+
+        #     print(
+        #         chunk.choices[0].delta.get("content", ""),
+        #         end="",
+        #         flush=True
+        #     )
+        # print()
 
         # if not user['has_premium_gpt3'] and user['gpt3_requests_num'] > 0:
         #     tokens = user['gpt3_requests_num'] - 1
@@ -171,10 +219,21 @@ async def message_handler(message: Message) -> None:
         # if not user['has_premium_gpt3'] and user['gpt3_requests_num'] <= 0:
         #     await message.answer(get_no_tokens_message(language), reply_markup=get_gpt3_payment_keyboard(language))
         #     return
-        await message.answer(get_user_prompt_message(language))
-        gpt_response_text, _ = gpt.generate_text(telegram_id, message.text, max_tokens=2000)
-        await bot.delete_message(telegram_id, message.message_id+1)
-        await message.reply(gpt_response_text, reply_markup=get_new_chat_keyboard(language))
+
+        # result = gpt.generate_response(telegram_id, message.text, max_tokens=2000)
+        # for generated_text in result:
+        #     print(generated_text)
+        #     await message.reply(generated_text, reply_markup=get_new_chat_keyboard(language))
+        #     await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id + 2, text=generated_text)
+
+        # while True:
+        #     # Generate a response to the user's message
+        #     generated_text, _ = gpt.generate_response(telegram_id, message.text, max_tokens=2000)
+        #
+        #     if generated_text:
+        #         print("Assistant:", generated_text)  # Replace this with your method of sending responses to the user
+        #         await message.reply(generated_text, reply_markup=get_new_chat_keyboard(language))
+        #         await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id+2, text=generated_text)
 
 
 async def main() -> None:
