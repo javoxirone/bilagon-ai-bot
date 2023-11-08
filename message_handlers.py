@@ -76,47 +76,30 @@ def get_examples_command_message(lang):
 
 def get_help_command_message(lang):
     message = {
-        "uz": "Bu Telegram bot ChatGPTga ulangan - OpenAIning inson tilini qayta ishlay oladigan sin'iy intellekti. "
-              "Bot so'rovni tahlil qiladi va ehtimoli eng yuqori bo'lgan javobni qaytaradi. Foydalanish uchun "
-              "quyidagi buyruqlarni mavjud:\n"
+        "uz": "Bilag'on AI Bot dasturimiz GPT til modeli asosida qurilgan bo'lib, foydalanuvchilarga Tez, Oson va Xafvsiz xizmat ko'rsatadi. Quyidagi buyruqlardan foydalanishingiz mumkin: \n"
               "\n"
               "/start - Botni ishga tushirish\n"
               "/help - Bot haqida ma'lumot\n"
               "/settings - Qolgan so'rovlar soni\n"
               "/language - Tilni o'zgartirish\n"
-              "/examples - Foydalanish misollari\n"
-              "/premium - Cheksiz so'rovlar\n"
-              "/gpt4 - Eng kuchlisi\n"
-              "/donate - Xayriya bilan qo'llab-quvvatlash\n"
-              "\n"
-              "Buyruqlarni chap pastki burchakdagi ko'k menu tugmachasi orqali ham ishlatishingiz mumkin.",
+              "/donate - Xayriya bilan qo'llab-quvvatlash\n",
 
-        "ru": "Этот Telegram бот подключён к ChatGPT - искусственный интеллект от OpenAI, способный обрабатывать "
-              "человеческий язык. Бот анализирует запрос и дает наиболее вероятный ответ. Для использования доступны "
-              "следующие команды:\n"
+        "ru": "Bilag’on AI Bot работает на языковой модели GPT. Наш Telegram бот обеспечивает <b>быстрое взаимодействие, безопасное общение</b> и <b>удобное использование</b> для своих пользователей. Доступны следующие команды:\n"
               "\n"
               "/start - Запуск бота\n"
               "/help - Информация о боте\n"
               "/settings - Количество оставшихся запросов\n"
               "/language - Поменять язык\n"
               "/examples - Примеры использования\n"
-              "/premium - Неограниченные запросы\n"
-              "/gpt4 - Самый мощный\n"
-              "/donate - Поддержать благотворительностью\n"
-              "\n"
-              "Команды также можно использовать с помощью синей кнопки меню в нижнем левом углу.",
-        "en": "This Telegram bot is powered by ChatGPT - artificial intelligence by OpenAI, that is capable of processing natural language. Bot understands human language and gives the most likely answer. To use, the following commands are available:\n"
+              "/donate - Поддержать благотворительностью\n",
+        "en": "Bilag'on AI Bot is powered by GPT language model. This Telegram bot provides <b>Fast Experience, Secure Chatting,</b> and <b>Convenient Use</b> for its users. Following commands are available:\n"
               "\n"
               "/start - Start the bot\n"
               "/help - Information about the bot\n"
               "/settings - Number of remaining requests\n"
               "/language - Change the language\n"
               "/examples - Examples of usage\n"
-              "/premium - Unlimited requests\n"
-              "/gpt4 - The most powerful\n"
               "/donate - Supporting by charity\n"
-              "\n"
-              "You can also use these commands with via the blue menu button in the lower left corner."
     }
     return message[lang]
 
@@ -172,19 +155,19 @@ def get_settings_command_message(tariff, requests_num, expiration_date, lang):
               f"So'rovlar soni: <b>{requests_num}</b>\n"
               f"Tugash vaqti: <b>{expiration_date}</b>\n"
               f"Botning tili: <b>{lang}</b>\n\n"
-              f"<b>Premium foydalanuvchiga aylaning va checksiz so'rovlarga ega bo'ling!</b>",
+              f"<b>Bilag'on AI Bot do'stlaringizga ulashing!</b>",
 
         'ru': f"Тариф: <b>{tariff}</b>\n"
               f"Количество запросов: <b>{requests_num}</b>\n"
               f"Дата окончания: <b>{expiration_date}</b>\n"
               f"Язык бота: <b>{lang}</b>\n\n"
-              f"<b>Станьте Премиум-пользователем, чтобы получать неограниченное количество запросов!</b>",
+              f"<b>Поделитесь Bilag'on AI Bot с друзьями!</b>",
 
         'en': f"Tariff: <b>{tariff}</b>\n"
               f"Number of requests: <b>{requests_num}</b>\n"
               f"Expiration date: <b>{expiration_date}</b>\n"
               f"Bot Language: <b>{lang}</b>\n\n"
-              f"<b>Become Premium user to get unlimited requests!</b>"
+              f"<b>Share Bilag'on AI Bot with friends!</b>"
     }
     return message[lang]
 
@@ -213,5 +196,43 @@ def get_premium_requests_num_message(lang):
         'uz': "Cheklanmagan",
         'ru': "Неограниченный",
         'en': "Unlimited"
+    }
+    return message[lang]
+
+
+def get_donate_command_message(lang):
+    message = {
+        "uz": "🤖 Bizning chat-botimizni rivojlantirishni qo'llab-quvvatlang!\n"
+              "\n"
+              "Salom!\n"
+              "\n"
+              "Sizning chat-bot tajribangizni yaxshilashga yordam bering. Sizning xayriyangiz uni rivojlantirishni ta'minlaydi, siz uchun eng yaxshi tajribani taqdim etadi.\n"
+              "\n"
+              "🙏 Karta raqami: <code>8600140453972474</code>\n"
+              "\n"
+              "Rahmat,\n"
+              "Bilag'on AI Bot jamoasi\n",
+
+        "ru": "🤖 Поддержите развитие нашего чат-бота!\n"
+              "\n"
+              "Привет!\n"
+              "\n"
+              "Помогите нам усовершенствовать ваш опыт чата. Ваше пожертвование обеспечит его развитие, гарантируя лучшего бота для вас.\n"
+              "\n"
+              "🙏 Карта для пожертвование: <code>8600140453972474</code>\n"
+              "\n"
+              "Спасибо,\n"
+              "Команда Bilag'on AI Bot\n",
+
+        "en": "🤖 Support Our Chatbot's Development!\n"
+              "\n"
+              "Hello!\n"
+              "\n"
+              "Help us enhance your chatbot experience. Your donation fuels its growth and improvement, ensuring a better copilot for you.\n"
+              "\n"
+              "🙏 Card Number: <code>8600140453972474</code>\n"
+              "\n"
+              "Thank you,\n"
+              "Bilag'on AI Bot Team\n"
     }
     return message[lang]
