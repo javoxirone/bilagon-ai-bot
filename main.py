@@ -1,3 +1,6 @@
+import re
+import time
+
 from dotenv import load_dotenv
 from gpt import OpenAIAPI
 from utils import initialize_user, get_user_language_by_telegram_id
@@ -6,7 +9,7 @@ load_dotenv()
 import asyncio
 import os
 import sys
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
@@ -152,7 +155,26 @@ async def process_callback_buy_monthly_gpt3(callback_query: CallbackQuery):
         pass
 
 
+async def safe_edit_message_text(
+    message: types.Message,
+    text: str,
+    parse_mode: str = None,
+    disable_web_page_preview: bool = False,
+    reply_markup: types.InlineKeyboardMarkup = None,
+    disable_notification: bool = False
+):
+    try:
+        await message.edit_text(
+            text,
+            parse_mode=parse_mode,
+            disable_web_page_preview=disable_web_page_preview,
+            reply_markup=reply_markup,
+            disable_notification=disable_notification
+        )
+    except Exception as e:
+        logging.error(f"Failed to edit message text: {e}")
 
+# TODO: fix bug with history of conversation
 @dp.message()
 async def message_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
@@ -162,6 +184,23 @@ async def message_handler(message: Message) -> None:
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         language = user["language"]
+        bot_message = await message.reply(get_user_prompt_message(language), parse_mode=None)
+
+        messages = gpt.user_histories.get(telegram_id, [])
+        messages.append({"role": "user", "content": message.text})
+        result = gpt.generate_text(max_tokens=2000, messages=messages)
+        text = ""
+        counter = 0
+        for chunk in result:
+
+            text += chunk.choices[0].delta.get("content", "")
+            if counter >= 15:
+                await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=None)
+                counter = 0
+            counter += 1
+
+        gpt.update_user_histories(telegram_id, message.text, text)
+        await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=ParseMode.MARKDOWN, reply_markup=get_new_chat_keyboard(language))
 
         # if not user['has_premium_gpt3'] and user['gpt3_requests_num'] > 0:
         #     tokens = user['gpt3_requests_num'] - 1
@@ -171,10 +210,21 @@ async def message_handler(message: Message) -> None:
         # if not user['has_premium_gpt3'] and user['gpt3_requests_num'] <= 0:
         #     await message.answer(get_no_tokens_message(language), reply_markup=get_gpt3_payment_keyboard(language))
         #     return
-        await message.answer(get_user_prompt_message(language))
-        gpt_response_text, _ = gpt.generate_text(telegram_id, message.text, max_tokens=2000)
-        await bot.delete_message(telegram_id, message.message_id+1)
-        await message.reply(gpt_response_text, reply_markup=get_new_chat_keyboard(language))
+
+        # result = gpt.generate_response(telegram_id, message.text, max_tokens=2000)
+        # for generated_text in result:
+        #     print(generated_text)
+        #     await message.reply(generated_text, reply_markup=get_new_chat_keyboard(language))
+        #     await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id + 2, text=generated_text)
+
+        # while True:
+        #     # Generate a response to the user's message
+        #     generated_text, _ = gpt.generate_response(telegram_id, message.text, max_tokens=2000)
+        #
+        #     if generated_text:
+        #         print("Assistant:", generated_text)  # Replace this with your method of sending responses to the user
+        #         await message.reply(generated_text, reply_markup=get_new_chat_keyboard(language))
+        #         await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id+2, text=generated_text)
 
 
 async def main() -> None:

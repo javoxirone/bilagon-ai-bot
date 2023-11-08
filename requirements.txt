@@ -11,7 +11,6 @@ certifi==2023.7.22
 charset-normalizer==3.3.0
 colorama==0.4.6
 dataclasses==0.6
-djangorestframework==3.14.0
 frozenlist==1.4.0
 idna==3.4
 magic-filter==1.0.12
