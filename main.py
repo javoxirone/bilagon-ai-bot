@@ -9,7 +9,7 @@ load_dotenv()
 import asyncio
 import os
 import sys
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, types
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
@@ -154,14 +154,25 @@ async def process_callback_buy_monthly_gpt3(callback_query: CallbackQuery):
     if is_registered_user:
         pass
 
-async def get_message_by_message_id(chat_id, message_id):
+
+async def safe_edit_message_text(
+    message: types.Message,
+    text: str,
+    parse_mode: str = None,
+    disable_web_page_preview: bool = False,
+    reply_markup: types.InlineKeyboardMarkup = None,
+    disable_notification: bool = False
+):
     try:
-        # Use the bot.get_message() method to get the message by chat_id and message_id
-        message = await bot.get_message(chat_id, message_id)
-        return message.text
+        await message.edit_text(
+            text,
+            parse_mode=parse_mode,
+            disable_web_page_preview=disable_web_page_preview,
+            reply_markup=reply_markup,
+            disable_notification=disable_notification
+        )
     except Exception as e:
-        print(f"An error occurred: {e}")
-        return None
+        logging.error(f"Failed to edit message text: {e}")
 
 import openai
 @dp.message()
@@ -173,7 +184,7 @@ async def message_handler(message: Message) -> None:
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         language = user["language"]
-        await message.reply(get_user_prompt_message(language), parse_mode=None)
+        bot_message = await message.reply(get_user_prompt_message(language), parse_mode=None)
 
         openai.api_key = os.getenv("OPENAI_API")
         result = openai.ChatCompletion.create(
@@ -188,22 +199,15 @@ async def message_handler(message: Message) -> None:
             stream=True  # Add this optional property.
         )
         text = ""
+        counter = 0
         for chunk in result:
 
             text += chunk.choices[0].delta.get("content", "")
-
-            if not text:
-                continue
-            try:
-                await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id + 1, text=text,parse_mode=None)
-            except Exception as e:
-                print(e)
-        try:
-            await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id + 1, text=text,
-                                        parse_mode=ParseMode.MARKDOWN, reply_markup=get_new_chat_keyboard(language))
-        except Exception as e:
-            print(e)
-
+            if counter >= 15:
+                await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=None)
+                counter = 0
+            counter += 1
+        await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=ParseMode.MARKDOWN, reply_markup=get_new_chat_keyboard(language))
         #     print(
         #         chunk.choices[0].delta.get("content", ""),
         #         end="",
