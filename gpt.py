@@ -1,6 +1,7 @@
 import re
 import openai
 import os
+from pprint import pprint
 
 
 class OpenAIAPI:
@@ -20,7 +21,7 @@ class OpenAIAPI:
 
             return response
         except Exception as e:
-            print(f"Error generating response: {e}")
+            pprint(f"Error generating response: {e}")
             return None
 
     def update_user_histories(self, telegram_id, user_message, bot_message):
@@ -29,8 +30,7 @@ class OpenAIAPI:
         user_history.append({"role": "user", "content": user_message})
         user_history.append({"role": "assistant", "content": bot_message})
         self.user_histories[telegram_id] = user_history
-        print(self.user_histories)
-
+        pprint(self.user_histories)
 
     def reset_chat(self, telegram_id):
         if telegram_id in self.user_histories:
