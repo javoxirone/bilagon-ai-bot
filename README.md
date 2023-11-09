@@ -1,17 +1,17 @@
-# BilagonAIBot
+# Bilag'on AI Bot Powered by GPT
 
-This project is a simple example of a Telegram bot developed using the aiogram library in Python. The bot can be used as a starting point for implementing more complex Telegram bots.
+This project is a Telegram bot developed using the aiogram library in Python. The bot utilizes the power of GPT (Generative Pre-trained Transformer) to generate intelligent and contextually relevant responses. It can be used as a starting point for building advanced AI-powered Telegram bots.
 
 ## Installation
 
 1. Clone the repository to your local machine:
 
-$ git clone https://github.com/username/aiogram-python-bot.git
+$ git clone https://github.com/username/bilagon-ai-bot.git
 
 
 2. Change into the project directory:
 
-$ cd aiogram-python-bot
+$ cd bilagon-ai-bot
 
 
 3. Create and activate a new virtual environment:
@@ -39,19 +39,21 @@ $ python bot.py
 
 ## Usage
 
-Once the bot is up and running, you can interact with it through the Telegram app. Search for your bot by its username, and send messages or commands to test its functionality.
+Once the bot is up and running, you can interact with it through the Telegram app. Search for your bot by its username, and send messages or commands to initiate AI-generated responses.
 
-The bot currently supports the following commands:
+The bot understands a variety of commands and responds accordingly. Some of the supported commands are:
 
 - /start: Displays a welcome message and instructions on how to use the bot.
-- /help: Displays a help message with a brief explanation of each command.
-- /echo <message>: The bot echoes the provided message.
+- /help: Provides assistance on using the bot and explains available commands.
+- /ask <question>: Sends the provided question to the AI model for generating an intelligent response.
+
+Feel free to experiment and ask the bot different questions to explore its capabilities.
 
 ## Contributing
 
-Contributions to this project are welcome. Feel free to open issues or submit pull requests with any improvements or new features you would like to add.
+Contributions to this project are welcome. If you have any improvements or new features to add, please open an issue or submit a pull request.
 
-Before contributing, please make sure to read the Contributing Guidelines (http://contributing.md/).
+Before contributing, please read the Contributing Guidelines (http://contributing.md/).
 
 ## License
 
