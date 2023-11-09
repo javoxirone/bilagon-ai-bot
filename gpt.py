@@ -1,7 +1,7 @@
 import re
 import openai
 import os
-import pprint
+from pprint import pprint
 
 
 class OpenAIAPI:
