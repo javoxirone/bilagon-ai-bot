@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from db import UserDatabase
 from keyboards import get_lang_keyboard
 import time
@@ -40,7 +40,7 @@ def generate_unique_payment_id():
     return payment_id
 
 
-async def initialize_user(message: Message) -> bool:
+async def initialize_user(message: Message | CallbackQuery) -> bool:
     telegram_id = message.from_user.id
     username = message.from_user.username
     first_name = message.from_user.first_name
