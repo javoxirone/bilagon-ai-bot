@@ -1,4 +1,4 @@
-def get_start_command_message(lang: any) -> dict:
+def get_start_command_message(lang: str) -> str:
     message = {
         "uz": "Bilag'on bo'tiga xush kelibsiz. Savolingizni berishingiz mumkin va men javob berishga harakat qilaman!",
         "ru": "Добро пожаловать в чат-бот Bilag'on. Вы можете задавать свои вопросы и я постараюсь на них ответить!",
@@ -7,7 +7,7 @@ def get_start_command_message(lang: any) -> dict:
     return message[lang]
 
 
-def get_language_command_message(lang: any) -> dict:
+def get_language_command_message(lang: str) -> str:
     message = {
         "uz": "Tilni tanlang:",
         "ru": "Выберите язык:",
@@ -16,7 +16,7 @@ def get_language_command_message(lang: any) -> dict:
     return message[lang]
 
 
-def get_user_prompt_message(lang: any) -> dict:
+def get_loading_message(lang: str) -> str:
     message = {
         "uz": "O'ylayapman...",
         "ru": "Я думаю...",
@@ -25,7 +25,7 @@ def get_user_prompt_message(lang: any) -> dict:
     return message[lang]
 
 
-def get_new_chat_message(lang):
+def get_new_chat_message(lang: str) -> str:
     message = {
         "uz": "Botning xotirasidan oxirgi so'rovlaringiz o'chirildi. Endi, boshqa mavzuda savol suhbat boshlashingiz mumkin 😊",
         "ru": "Бот стер память о вашем предыдущем запросе и его ответе. Теперь вы можете выбрать другую тему и начать новый чат 😊",
@@ -34,7 +34,7 @@ def get_new_chat_message(lang):
     return message[lang]
 
 
-def get_examples_command_message(lang):
+def get_examples_command_message(lang: str) -> str:
     message = {
         'uz': '''
 • Qiziqarli faktlarni menga ayting, iltimos.
@@ -74,7 +74,7 @@ def get_examples_command_message(lang):
     return message[lang]
 
 
-def get_help_command_message(lang):
+def get_help_command_message(lang: str) -> str:
     message = {
         "uz": "Bilag'on AI Bot dasturimiz GPT til modeli asosida qurilgan bo'lib, foydalanuvchilarga Tez, Oson va Xafvsiz xizmat ko'rsatadi. Quyidagi buyruqlardan foydalanishingiz mumkin: \n"
               "\n"
@@ -104,7 +104,7 @@ def get_help_command_message(lang):
     return message[lang]
 
 
-def get_token_update_message(lang):
+def get_token_update_message(lang: str) -> str:
     message = {
         "uz": "Sizga 5ta token qo'shildi",
         "ru": "Вам было добавлено 5 токенов",
@@ -113,7 +113,7 @@ def get_token_update_message(lang):
     return message[lang]
 
 
-def get_no_tokens_message(lang):
+def get_no_tokens_message(lang: str) -> str:
     message = {
         'uz': '''
 Sizning kunlik soʻrovingiz chegarasi tugadi. Premium foydalanuvchiga yangilash orqali botdan maksimal darajada foydalaning.
@@ -140,7 +140,7 @@ The costs associated with the server, database, and API will be paid for. Furthe
     return message[lang]
 
 
-def get_gpt3_payment_successful_message(lang):
+def get_gpt3_payment_successful_message(lang: str) -> str:
     message = {
         'uz': "To'lov muvaffaqiyatli amalga oshirildi ✅",
         'ru': "Оплата успешно завершена ✅",
@@ -172,26 +172,7 @@ def get_settings_command_message(tariff, requests_num, expiration_date, lang):
     return message[lang]
 
 
-def get_settings_command_premium_user_message(tariff, requests_num, expiration_date, lang):
-    message = {
-        'uz': f"Tarif: <b>{tariff}</b>\n"
-              f"So'rovlar soni: <b>{requests_num}</b>\n"
-              f"Tugash vaqti: <b>{expiration_date}</b>\n"
-              f"Botning tili: <b>{lang}</b>\n\n",
-
-        'ru': f"Тариф: <b>{tariff}</b>\n"
-              f"Количество запросов: <b>{requests_num}</b>\n"
-              f"Дата окончания: <b>{expiration_date}</b>\n"
-              f"Язык бота: <b>{lang}</b>\n\n",
-
-        'en': f"Tariff: <b>{tariff}</b>\n"
-              f"Number of requests: <b>{requests_num}</b>\n"
-              f"Expiration date: <b>{expiration_date}</b>\n"
-              f"Bot Language: <b>{lang}</b>\n\n",
-    }
-    return message[lang]
-
-def get_premium_requests_num_message(lang):
+def get_premium_requests_num_message(lang: str) -> str:
     message = {
         'uz': "Cheklanmagan",
         'ru': "Неограниченный",
@@ -200,7 +181,7 @@ def get_premium_requests_num_message(lang):
     return message[lang]
 
 
-def get_donate_command_message(lang):
+def get_donate_command_message(lang: str) -> str:
     message = {
         "uz": "🤖 Bizning chat-botimizni rivojlantirishni qo'llab-quvvatlang!\n"
               "\n"
@@ -234,5 +215,23 @@ def get_donate_command_message(lang):
               "\n"
               "Thank you,\n"
               "Bilag'on AI Bot Team\n"
+    }
+    return message[lang]
+
+
+def get_openai_error_message(lang):
+    message = {
+        'uz': "Keyinroq qayta urinib ko‘ring. Hozirda bizga juda ko'p so'rovlar kelib tushmoqda!",
+        'ru': "Попробуйте позже. В настоящее время мы получаем большое количество запросов!",
+        'en': "Try again later. We are currently receiving a large number of requests!"
+    }
+    return message[lang]
+
+
+def get_bot_error_message(lang):
+    message = {
+        'uz': "Nimadir noto'g'ri bajarildi! Yangi suhbat boshlashga harakat qiling👇",
+        'ru': "Что-то пошло не так! Попробуйте начать новый разговор 👇",
+        'en': "Something went wrong! Try starting a new conversation 👇"
     }
     return message[lang]

@@ -1,30 +1,28 @@
-import re
-import time
-
-from dotenv import load_dotenv
-from gpt import OpenAIAPI
-from utils import initialize_user, get_user_language_by_telegram_id
-
-load_dotenv()
 import asyncio
 import os
 import sys
-from aiogram import Bot, Dispatcher, types
+import logging
+from openai import error
+from aiogram import Bot, Dispatcher
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
-import logging
 from db import UserDatabase
-from message_handlers import get_start_command_message, get_language_command_message, get_user_prompt_message, \
-    get_new_chat_message, get_help_command_message, get_examples_command_message, get_token_update_message, \
-    get_no_tokens_message, get_settings_command_message, \
-    get_premium_requests_num_message, get_settings_command_premium_user_message, get_donate_command_message
-from keyboards import get_lang_keyboard, get_new_chat_keyboard, get_gpt3_payment_keyboard
+from message_handlers import get_start_command_message, get_language_command_message, get_loading_message, \
+    get_new_chat_message, get_help_command_message, get_examples_command_message, get_settings_command_message, \
+    get_premium_requests_num_message, get_donate_command_message, get_openai_error_message, get_bot_error_message
+from keyboards import get_lang_keyboard, get_new_chat_keyboard
+from dotenv import load_dotenv
+from gpt import OpenAIAPI
+from utils import initialize_user, get_user_language_by_telegram_id
+from aiogram import F
+
+load_dotenv()
+gpt = OpenAIAPI()
 
 TOKEN = os.getenv('BOT_TOKEN')
 bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
 dp = Dispatcher()
-gpt = OpenAIAPI()
 
 
 @dp.message(Command('start'))
@@ -57,16 +55,10 @@ async def command_settings_handler(message: Message) -> None:
         db = UserDatabase()
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
-        # tariff = "Premium" if user['has_premium_gpt3'] else "Free"
         tariff = "-"
-        # requests_num = get_premium_requests_num_message(user['language']) if user['has_premium_gpt3'] else user['gpt3_requests_num']
         requests_num = get_premium_requests_num_message(user['language'])
-        # expiration_date = user['gpt3_requests_expire_datetime']
         expiration_date = "-"
         language = user['language']
-        if user['has_premium_gpt3']:
-            await message.answer(get_settings_command_premium_user_message(tariff, requests_num, expiration_date, language), parse_mode=ParseMode.HTML)
-            return
         await message.answer(get_settings_command_message(tariff, requests_num, expiration_date, language),
                              parse_mode=ParseMode.HTML)
 
@@ -100,11 +92,11 @@ async def command_donate_handler(message: Message) -> None:
     if is_registered_user:
         telegram_id = message.from_user.id
         language = get_user_language_by_telegram_id(telegram_id)
-        return message.answer(get_donate_command_message(language), parse_mode=ParseMode.HTML)
+        await message.answer(get_donate_command_message(language), parse_mode=ParseMode.HTML)
+
 
 @dp.callback_query(lambda c: c.data == 'uz')
 async def process_callback_uz_lang(callback_query: CallbackQuery):
-
     telegram_id = callback_query.from_user.id
     db = UserDatabase()
     db.change_language(telegram_id, callback_query.data)
@@ -148,34 +140,7 @@ async def process_callback_new_chat(callback_query: CallbackQuery):
         await bot.send_message(telegram_id, get_new_chat_message(user["language"]))
 
 
-@dp.callback_query(lambda c: c.data == 'buy_premium_gpt3')
-async def process_callback_buy_monthly_gpt3(callback_query: CallbackQuery):
-    is_registered_user = await initialize_user(callback_query)
-    if is_registered_user:
-        pass
-
-
-async def safe_edit_message_text(
-    message: types.Message,
-    text: str,
-    parse_mode: str = None,
-    disable_web_page_preview: bool = False,
-    reply_markup: types.InlineKeyboardMarkup = None,
-    disable_notification: bool = False
-):
-    try:
-        await message.edit_text(
-            text,
-            parse_mode=parse_mode,
-            disable_web_page_preview=disable_web_page_preview,
-            reply_markup=reply_markup,
-            disable_notification=disable_notification
-        )
-    except Exception as e:
-        logging.error(f"Failed to edit message text: {e}")
-
-# TODO: fix bug with history of conversation
-@dp.message()
+@dp.message(F.text)
 async def message_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
     if is_registered_user:
@@ -184,54 +149,36 @@ async def message_handler(message: Message) -> None:
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         language = user["language"]
-        bot_message = await message.reply(get_user_prompt_message(language), parse_mode=None)
+        bot_message = await message.reply(get_loading_message(language), parse_mode=None)
+        try:
+            messages = gpt.user_histories.get(telegram_id, [])
+            messages.append({"role": "user", "content": message.text})
+            result = gpt.generate_response(max_tokens=2000, messages=messages)
+            text = ""
+            counter = 0
+            for chunk in result:
 
-        messages = gpt.user_histories.get(telegram_id, [])
-        messages.append({"role": "user", "content": message.text})
-        result = gpt.generate_text(max_tokens=2000, messages=messages)
-        text = ""
-        counter = 0
-        for chunk in result:
+                text += chunk.choices[0].delta.get("content", "")
+                if counter >= 30:
+                    await bot.edit_message_text(text + " ▌", telegram_id, bot_message.message_id, parse_mode=None)
+                    counter = 0
+                counter += 1
 
-            text += chunk.choices[0].delta.get("content", "")
-            if counter >= 15:
-                await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=None)
-                counter = 0
-            counter += 1
-
-        gpt.update_user_histories(telegram_id, message.text, text)
-        await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=ParseMode.MARKDOWN, reply_markup=get_new_chat_keyboard(language))
-
-        # if not user['has_premium_gpt3'] and user['gpt3_requests_num'] > 0:
-        #     tokens = user['gpt3_requests_num'] - 1
-        #     db = UserDatabase()
-        #     db.update_tokens(telegram_id, 'gpt3', tokens)
-        #     db.close()
-        # if not user['has_premium_gpt3'] and user['gpt3_requests_num'] <= 0:
-        #     await message.answer(get_no_tokens_message(language), reply_markup=get_gpt3_payment_keyboard(language))
-        #     return
-
-        # result = gpt.generate_response(telegram_id, message.text, max_tokens=2000)
-        # for generated_text in result:
-        #     print(generated_text)
-        #     await message.reply(generated_text, reply_markup=get_new_chat_keyboard(language))
-        #     await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id + 2, text=generated_text)
-
-        # while True:
-        #     # Generate a response to the user's message
-        #     generated_text, _ = gpt.generate_response(telegram_id, message.text, max_tokens=2000)
-        #
-        #     if generated_text:
-        #         print("Assistant:", generated_text)  # Replace this with your method of sending responses to the user
-        #         await message.reply(generated_text, reply_markup=get_new_chat_keyboard(language))
-        #         await bot.edit_message_text(chat_id=telegram_id, message_id=message.message_id+2, text=generated_text)
+            gpt.update_user_histories(telegram_id, message.text, text)
+            await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=ParseMode.MARKDOWN,
+                                        reply_markup=get_new_chat_keyboard(language))
+        except error.OpenAIError as e:
+            print(e)
+            await bot.edit_message_text(get_openai_error_message(language), telegram_id, bot_message.message_id,
+                                        parse_mode=ParseMode.HTML)
+        except Exception as e:
+            print(e)
+            await bot.edit_message_text(get_bot_error_message(language), telegram_id, bot_message.message_id,
+                                        parse_mode=ParseMode.HTML, reply_markup=get_new_chat_keyboard(language))
 
 
 async def main() -> None:
-    # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot_inner = Bot(TOKEN, parse_mode=ParseMode.MARKDOWN)
-    # And the run events dispatching
-    await dp.start_polling(bot_inner)
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
