@@ -147,26 +147,28 @@ async def message_handler(message: Message) -> None:
         telegram_id = message.from_user.id
         db = UserDatabase()
         user = db.get_user_by_telegram_id(telegram_id)
-        db.close()
         language = user["language"]
         bot_message = await message.reply(get_loading_message(language), parse_mode=None)
+
         try:
             messages = gpt.user_histories.get(telegram_id, [])
             messages.append({"role": "user", "content": message.text})
             result = gpt.generate_response(max_tokens=2000, messages=messages)
-            text = ""
+
+            chunks = []
             counter = 0
             for chunk in result:
-
-                text += chunk.choices[0].delta.get("content", "")
-                if counter >= 30:
-                    await bot.edit_message_text(text + " ▌", telegram_id, bot_message.message_id, parse_mode=None)
-                    counter = 0
+                chunks.append(chunk.choices[0].delta.get("content", ""))
                 counter += 1
+                if counter >= 30:
+                    await bot.edit_message_text("".join(chunks), telegram_id, bot_message.message_id, parse_mode=None)
+                    counter = 0
 
+            text = "".join(chunks)
             gpt.update_user_histories(telegram_id, message.text, text)
             await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=ParseMode.MARKDOWN,
                                         reply_markup=get_new_chat_keyboard(language))
+
         except error.OpenAIError as e:
             print(e)
             await bot.edit_message_text(get_openai_error_message(language), telegram_id, bot_message.message_id,
@@ -175,6 +177,8 @@ async def message_handler(message: Message) -> None:
             print(e)
             await bot.edit_message_text(get_bot_error_message(language), telegram_id, bot_message.message_id,
                                         parse_mode=ParseMode.HTML, reply_markup=get_new_chat_keyboard(language))
+        finally:
+            db.close()
 
 
 async def main() -> None:
