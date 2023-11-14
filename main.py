@@ -7,7 +7,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import Message, CallbackQuery
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
-from db import UserDatabase
+from db_psycopg import Database
 from message_handlers import get_start_command_message, get_language_command_message, get_loading_message, \
     get_new_chat_message, get_help_command_message, get_examples_command_message, get_settings_command_message, \
     get_premium_requests_num_message, get_donate_command_message, get_openai_error_message, get_bot_error_message
@@ -29,7 +29,7 @@ dp = Dispatcher()
 async def command_start_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
     if is_registered_user:
-        db = UserDatabase()
+        db = Database()
         user = db.get_user_by_telegram_id(message.from_user.id)
         db.close()
         await message.answer(get_start_command_message(user["language"]))
@@ -40,7 +40,7 @@ async def command_help_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
     if is_registered_user:
         telegram_id = message.from_user.id
-        db = UserDatabase()
+        db = Database()
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         language = user["language"]
@@ -52,7 +52,7 @@ async def command_settings_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
     if is_registered_user:
         telegram_id = message.from_user.id
-        db = UserDatabase()
+        db = Database()
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         tariff = "-"
@@ -68,7 +68,7 @@ async def command_language_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
     if is_registered_user:
         telegram_id = message.from_user.id
-        db = UserDatabase()
+        db = Database()
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         await message.answer(get_language_command_message(user["language"]), reply_markup=get_lang_keyboard())
@@ -79,7 +79,7 @@ async def command_examples_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
     if is_registered_user:
         telegram_id = message.from_user.id
-        db = UserDatabase()
+        db = Database()
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         language = user["language"]
@@ -98,7 +98,7 @@ async def command_donate_handler(message: Message) -> None:
 @dp.callback_query(lambda c: c.data == 'uz')
 async def process_callback_uz_lang(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
-    db = UserDatabase()
+    db = Database()
     db.change_language(telegram_id, callback_query.data)
     db.close()
 
@@ -109,7 +109,7 @@ async def process_callback_uz_lang(callback_query: CallbackQuery):
 @dp.callback_query(lambda c: c.data == 'ru')
 async def process_callback_ru_lang(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
-    db = UserDatabase()
+    db = Database()
     db.change_language(telegram_id, callback_query.data)
     db.close()
 
@@ -120,7 +120,7 @@ async def process_callback_ru_lang(callback_query: CallbackQuery):
 @dp.callback_query(lambda c: c.data == 'en')
 async def process_callback_en_lang(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
-    db = UserDatabase()
+    db = Database()
     db.change_language(telegram_id, callback_query.data)
     db.close()
 
@@ -133,7 +133,7 @@ async def process_callback_new_chat(callback_query: CallbackQuery):
     is_registered_user = await initialize_user(callback_query)
     if is_registered_user:
         telegram_id = callback_query.from_user.id
-        db = UserDatabase()
+        db = Database()
         user = db.get_user_by_telegram_id(telegram_id)
         db.close()
         gpt.reset_chat(telegram_id)
@@ -145,14 +145,15 @@ async def message_handler(message: Message) -> None:
     is_registered_user = await initialize_user(message)
     if is_registered_user:
         telegram_id = message.from_user.id
-        db = UserDatabase()
+        db = Database()
         user = db.get_user_by_telegram_id(telegram_id)
         language = user["language"]
         bot_message = await message.reply(get_loading_message(language), parse_mode=None)
 
         try:
-            messages = gpt.user_histories.get(telegram_id, [])
-            messages.append({"role": "user", "content": message.text})
+            db.add_conversation(telegram_id, "user", message.text)
+            messages = db.get_conversations_by_telegram_id(telegram_id)
+            print(messages)
             result = gpt.generate_response(max_tokens=2000, messages=messages)
 
             chunks = []
@@ -160,14 +161,14 @@ async def message_handler(message: Message) -> None:
             for chunk in result:
                 chunks.append(chunk.choices[0].delta.get("content", ""))
                 counter += 1
-                if counter >= 30:
-                    await bot.edit_message_text("".join(chunks), telegram_id, bot_message.message_id, parse_mode=None)
+                if counter >= 15:
+                    await bot.edit_message_text("".join(chunks)+" ▌", telegram_id, bot_message.message_id, parse_mode=None)
                     counter = 0
 
             text = "".join(chunks)
-            gpt.update_user_histories(telegram_id, message.text, text)
             await bot.edit_message_text(text, telegram_id, bot_message.message_id, parse_mode=ParseMode.MARKDOWN,
                                         reply_markup=get_new_chat_keyboard(language))
+            db.add_conversation(telegram_id, "assistant", text)
 
         except error.OpenAIError as e:
             print(e)

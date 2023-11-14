@@ -2,7 +2,6 @@ import sqlite3
 from datetime import datetime, timedelta
 
 
-
 class UserDatabase:
     def __init__(self, db_name=None):
         self.db_name = db_name or "user_db.sqlite"

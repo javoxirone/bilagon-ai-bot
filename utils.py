@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 from aiogram.types import Message, CallbackQuery
-from db import UserDatabase
+from db_psycopg import Database
 from keyboards import get_lang_keyboard
 import time
 import random
@@ -45,7 +45,7 @@ async def initialize_user(message: Message | CallbackQuery) -> bool:
     username = message.from_user.username
     first_name = message.from_user.first_name
     last_name = message.from_user.last_name
-    db = UserDatabase()
+    db = Database()
 
     if not db.user_exists(telegram_id):
         await message.answer(
