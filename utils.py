@@ -69,7 +69,7 @@ def format_datetime(dt):
 
 
 def get_user_language_by_telegram_id(telegram_id: int) -> str:
-    db = UserDatabase()
+    db = Database()
     user = db.get_user_by_telegram_id(telegram_id)
     db.close()
     language = user["language"]
