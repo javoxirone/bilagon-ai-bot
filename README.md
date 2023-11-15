@@ -27,14 +27,20 @@ $ pip install -r requirements.txt
 
 5. Set up your Telegram bot token:
 
+   - Create .env file
    - Create a new bot on Telegram by following the instructions provided by the BotFather (https://core.telegram.org/bots#botfather).
-   - Copy the bot token obtained from the BotFather.
-
-   - Open the config.py file and replace <YOUR_BOT_TOKEN> with your actual bot token.
+   - Copy and paste the following fields to .env file, and fill them out:
+      OPENAI_API = '<YOUR_OPEN_AI_API_KEY>'
+      BOT_TOKEN = '<YOUR_BOT_TOKEN>'
+      DB_NAME = '<YOUR_DB_NAME>'
+      DB_HOST = '<YOUR_DB_HOST>'
+      DB_USER = '<YOUR_DB_USER>'
+      DB_PORT = '5432'
+      DB_PASSWORD = '<YOUR_DB_PASSWORD>'
 
 6. Run the bot:
 
-$ python bot.py
+$ python main.py
 
 
 ## Usage
@@ -43,18 +49,15 @@ Once the bot is up and running, you can interact with it through the Telegram ap
 
 The bot understands a variety of commands and responds accordingly. Some of the supported commands are:
 
-- /start: Displays a welcome message and instructions on how to use the bot.
-- /help: Provides assistance on using the bot and explains available commands.
-- /ask <question>: Sends the provided question to the AI model for generating an intelligent response.
+/start - Start the bot
+/help - Information about the bot
+/settings - Number of remaining requests
+/language - Change the language
+/examples - Examples of usage
+/donate - Supporting by charity
 
 Feel free to experiment and ask the bot different questions to explore its capabilities.
 
 ## Contributing
 
 Contributions to this project are welcome. If you have any improvements or new features to add, please open an issue or submit a pull request.
-
-Before contributing, please read the Contributing Guidelines (http://contributing.md/).
-
-## License
-
-This project is licensed under the MIT License.
