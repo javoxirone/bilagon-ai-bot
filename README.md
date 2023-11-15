@@ -5,31 +5,32 @@ This project is a Telegram bot developed using the aiogram library in Python. Th
 ## Installation
 
 1. Clone the repository to your local machine:
-
-$ git clone https://github.com/username/bilagon-ai-bot.git
-
+```cmd
+git clone https://github.com/username/bilagon-ai-bot.git
+```
 
 2. Change into the project directory:
-
-$ cd bilagon-ai-bot
-
+```cmd
+cd bilagon-ai-bot
+```
 
 3. Create and activate a new virtual environment:
-
-$ python3 -m venv env
-$ source env/bin/activate
-
+```cmd
+python3 -m venv env
+source env/bin/activate
+```
 
 4. Install the required dependencies:
-
-$ pip install -r requirements.txt
-
+```cmd
+pip install -r requirements.txt
+```
 
 5. Set up your Telegram bot token:
 
    - Create .env file
    - Create a new bot on Telegram by following the instructions provided by the BotFather (https://core.telegram.org/bots#botfather).
    - Copy and paste the following fields to .env file, and fill them out:
+      ```.env
       OPENAI_API = '<YOUR_OPEN_AI_API_KEY>'
       BOT_TOKEN = '<YOUR_BOT_TOKEN>'
       DB_NAME = '<YOUR_DB_NAME>'
@@ -37,25 +38,26 @@ $ pip install -r requirements.txt
       DB_USER = '<YOUR_DB_USER>'
       DB_PORT = '5432'
       DB_PASSWORD = '<YOUR_DB_PASSWORD>'
+      ```
 
 6. Run the bot:
-
-$ python main.py
-
+```cmd
+python main.py
+```
 
 ## Usage
 
 Once the bot is up and running, you can interact with it through the Telegram app. Search for your bot by its username, and send messages or commands to initiate AI-generated responses.
 
 The bot understands a variety of commands and responds accordingly. Some of the supported commands are:
-
+```
 /start - Start the bot
 /help - Information about the bot
 /settings - Number of remaining requests
 /language - Change the language
 /examples - Examples of usage
 /donate - Supporting by charity
-
+```
 Feel free to experiment and ask the bot different questions to explore its capabilities.
 
 ## Contributing
