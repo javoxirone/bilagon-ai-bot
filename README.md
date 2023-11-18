@@ -15,6 +15,7 @@ cd bilagon-ai-bot
 ```
 
 3. Create and activate a new virtual environment:
+
 For Linux users:
 ```cmd
 python3 -m venv env
@@ -48,6 +49,7 @@ pip install -r requirements.txt
       ```
 
 6. Run the bot:
+
 For Linux users:
 ```cmd
 python3 main.py
