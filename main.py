@@ -153,16 +153,17 @@ async def message_handler(message: Message) -> None:
         try:
             db.add_conversation(telegram_id, "user", message.text)
             messages = db.get_conversations_by_telegram_id(telegram_id)
-            print(messages)
+            messages.append({'role': 'system',
+                             'content': "You are a friendly AI chatbot that can help and assist with any questions of the user. Your are Bilagon AI Bot which is powered by GPT model."})
             result = gpt.generate_response(max_tokens=2000, messages=messages)
-
             chunks = []
             counter = 0
             for chunk in result:
                 chunks.append(chunk.choices[0].delta.get("content", ""))
                 counter += 1
                 if counter >= 15:
-                    await bot.edit_message_text("".join(chunks)+" ▌", telegram_id, bot_message.message_id, parse_mode=None)
+                    await bot.edit_message_text("".join(chunks) + " ▌", telegram_id, bot_message.message_id,
+                                                parse_mode=None)
                     counter = 0
 
             text = "".join(chunks)
