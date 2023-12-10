@@ -153,8 +153,6 @@ async def message_handler(message: Message) -> None:
         try:
             db.add_conversation(telegram_id, "user", message.text)
             messages = db.get_conversations_by_telegram_id(telegram_id)
-            messages.append({'role': 'system',
-                             'content': "You are a friendly AI chatbot that can help and assist with any questions of the user. Your are Bilagon AI Bot which is powered by GPT model."})
             result = gpt.generate_response(max_tokens=2000, messages=messages)
             chunks = []
             counter = 0
