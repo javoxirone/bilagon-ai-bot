@@ -1,7 +1,7 @@
 from datetime import datetime
 from aiogram.types import Message, CallbackQuery
-from db_psycopg import Database
-from keyboards import get_lang_keyboard
+from database.user import User
+from keyboards.inline_keyboards import get_lang_keyboard
 
 
 async def initialize_user(message: Message | CallbackQuery) -> bool:
@@ -9,7 +9,7 @@ async def initialize_user(message: Message | CallbackQuery) -> bool:
     username = message.from_user.username
     first_name = message.from_user.first_name
     last_name = message.from_user.last_name
-    db = Database()
+    db = User()
 
     if not db.user_exists(telegram_id):
         await message.answer(
@@ -33,7 +33,7 @@ def format_datetime(dt):
 
 
 def get_user_language_by_telegram_id(telegram_id: int) -> str:
-    db = Database()
+    db = User()
     user = db.get_user_by_telegram_id(telegram_id)
     db.close()
     language = user["language"]
