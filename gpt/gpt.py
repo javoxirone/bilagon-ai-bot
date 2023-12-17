@@ -1,7 +1,8 @@
 import openai
 import os
 from pprint import pprint
-from db_psycopg import Database
+from database.base import Database
+from database.conversation import Conversation
 
 
 class OpenAIAPI:
@@ -28,12 +29,12 @@ class OpenAIAPI:
             return None
 
     def update_user_histories(self, telegram_id, user_message, bot_message):
-        db = Database()
+        db = Conversation()
         db.add_conversation(telegram_id, "user", user_message)
         db.add_conversation(telegram_id, "assistant", bot_message)
         db.close()
 
     def reset_chat(self, telegram_id):
-        db = Database()
+        db = Conversation()
         db.reset_conversations(telegram_id)
         db.close()
