@@ -8,16 +8,21 @@ from templates.message_templates import (
     get_openai_error_message,
     get_bot_error_message,
 )
-from config.integrations import bot, gpt
 from aiogram.enums import ParseMode
 from keyboards.inline_keyboards import get_new_chat_keyboard
 from services.utils import (
     initialize_user,
 )
+from config.integrations import gpt
+from aiogram import Bot
+from config.constants import TOKEN
+from aiogram.enums import ParseMode
 
+bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
 async def message_handler(message: Message) -> None:
     text = ""
     is_registered_user = await initialize_user(message)
+
     if is_registered_user:
         telegram_id = message.from_user.id
         user_db = User()

@@ -1,9 +1,15 @@
 
 from services.utils import initialize_user
 from database.user import User
-from config.integrations import bot, gpt
+
 from aiogram.types import CallbackQuery
 from templates.message_templates import (get_new_chat_message, )
+from config.integrations import gpt
+from aiogram import Bot
+from config.constants import TOKEN
+from aiogram.enums import ParseMode
+
+bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
 
 async def process_callback_uz_lang(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id

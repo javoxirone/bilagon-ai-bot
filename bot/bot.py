@@ -1,5 +1,4 @@
 
-from config.integrations import dp
 from aiogram.filters import Command
 from aiogram import F
 from bot.handlers.command_handlers import (
@@ -19,7 +18,12 @@ from bot.handlers.callback_handlers import (
 from bot.handlers.message_handlers import (
     message_handler,
 )
+from aiogram import Bot, Dispatcher
+from config.constants import TOKEN
+from aiogram.enums import ParseMode
 
+bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
+dp = Dispatcher()
 
 # Command handlers
 dp.message.register(command_start_handler, Command('start'))
