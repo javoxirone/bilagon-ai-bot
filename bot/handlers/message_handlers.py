@@ -19,7 +19,15 @@ from config.constants import TOKEN
 from aiogram.enums import ParseMode
 
 bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
+
+
+# TODO: break down into utility functions
 async def message_handler(message: Message) -> None:
+    """
+    Gets the user's request and returns GPT model's response with streaming.
+
+    :param message: User's message object.
+    """
     text = ""
     is_registered_user = await initialize_user(message)
 

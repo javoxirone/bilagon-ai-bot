@@ -18,6 +18,7 @@ from bot.handlers.callback_handlers import (
 from bot.handlers.message_handlers import (
     message_handler,
 )
+from bot.handlers.image_handlers import image_handler
 from aiogram import Bot, Dispatcher
 from config.constants import TOKEN
 from aiogram.enums import ParseMode
@@ -41,4 +42,7 @@ dp.callback_query.register(process_callback_new_chat, lambda c: c.data == 'new_c
 
 # Message handlers
 dp.message.register(message_handler, F.text)
+
+# Media handlers
+dp.message.register(image_handler, F.photo)
 
