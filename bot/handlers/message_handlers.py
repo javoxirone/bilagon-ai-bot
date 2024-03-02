@@ -25,7 +25,7 @@ class Request(TypedDict):
 
 bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
 
-
+# TODO: need to be refactored, and maybe allocated to another file and folder
 async def generate_gpt_response(request: Request) -> None:
     text = ""
     telegram_id = request["telegram_id"]

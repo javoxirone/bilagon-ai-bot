@@ -8,7 +8,7 @@ from pprint import pprint
 from bot.handlers.message_handlers import generate_gpt_response
 from services.utils import get_language_of_single_user
 from templates.message_templates import get_loading_message
-
+from tasks import delete_handled_image
 
 # TODO: add photo remover function
 async def image_handler(message: Message, bot: Bot) -> None:
@@ -24,6 +24,8 @@ async def image_handler(message: Message, bot: Bot) -> None:
 
     extracted_text = extract_text_from_bytes(path)
     
+    # Deleting already used image
+    delete_handled_image.delay(path)
     context = {
         "telegram_id": message.from_user.id,
         "text": (
