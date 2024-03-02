@@ -1,12 +1,11 @@
-from database.user import User
 from aiogram.enums import ParseMode
 
 from aiogram.types import Message
 from services.utils import (
-    initialize_user,
-    get_lang_keyboard,
-    get_user_language_by_telegram_id,
+    get_single_user,
+    get_language_of_single_user,
 )
+from keyboards.inline_keyboards import get_lang_keyboard
 from templates.message_templates import (
     get_start_command_message,
     get_language_command_message,
@@ -16,67 +15,53 @@ from templates.message_templates import (
     get_premium_requests_num_message,
     get_donate_command_message,
 )
+from decorators.auth_decorators import initialize_user
 
+
+
+@initialize_user
 async def command_start_handler(message: Message) -> None:
-    is_registered_user = await initialize_user(message)
-    if is_registered_user:
-        db = User()
-        user = db.get_user_by_telegram_id(message.from_user.id)
-        db.close()
-        await message.answer(get_start_command_message(user["language"]))
+    user = get_single_user(message.from_user.id)
+    await message.answer(get_start_command_message(user["language"]))
 
 
+@initialize_user
 async def command_help_handler(message: Message) -> None:
-    is_registered_user = await initialize_user(message)
-    if is_registered_user:
-        telegram_id = message.from_user.id
-        db = User()
-        user = db.get_user_by_telegram_id(telegram_id)
-        db.close()
-        language = user["language"]
-        await message.answer(get_help_command_message(language), parse_mode=ParseMode.HTML)
+    language = get_language_of_single_user(message.from_user.id)
+    await message.answer(get_help_command_message(language), parse_mode=ParseMode.HTML)
 
 
+@initialize_user
 async def command_settings_handler(message: Message) -> None:
-    is_registered_user = await initialize_user(message)
-    if is_registered_user:
-        telegram_id = message.from_user.id
-        db = User()
-        user = db.get_user_by_telegram_id(telegram_id)
-        db.close()
-        tariff = "-"
-        requests_num = get_premium_requests_num_message(user['language'])
-        expiration_date = "-"
-        language = user['language']
-        await message.answer(get_settings_command_message(tariff, requests_num, expiration_date, language),
-                             parse_mode=ParseMode.HTML)
+    telegram_id = message.from_user.id
+    user = get_single_user(telegram_id)
+    tariff = "-"
+    requests_num = get_premium_requests_num_message(user["language"])
+    expiration_date = "-"
+    language = user["language"]
+    await message.answer(
+        get_settings_command_message(tariff, requests_num, expiration_date, language),
+        parse_mode=ParseMode.HTML,
+    )
 
 
+@initialize_user
 async def command_language_handler(message: Message) -> None:
-    is_registered_user = await initialize_user(message)
-    if is_registered_user:
-        telegram_id = message.from_user.id
-        db = User()
-        user = db.get_user_by_telegram_id(telegram_id)
-        db.close()
-        await message.answer(get_language_command_message(user["language"]), reply_markup=get_lang_keyboard())
+    user = get_single_user(message.from_user.id)
+    await message.answer(
+        get_language_command_message(user["language"]), reply_markup=get_lang_keyboard()
+    )
 
 
+@initialize_user
 async def command_examples_handler(message: Message) -> None:
-    is_registered_user = await initialize_user(message)
-    if is_registered_user:
-        telegram_id = message.from_user.id
-        db = User()
-        user = db.get_user_by_telegram_id(telegram_id)
-        db.close()
-        language = user["language"]
-        await message.answer(get_examples_command_message(language))
+    language = get_language_of_single_user(message.from_user.id)
+    await message.answer(get_examples_command_message(language))
 
 
+@initialize_user
 async def command_donate_handler(message: Message) -> None:
-    is_registered_user = await initialize_user(message)
-    if is_registered_user:
-        telegram_id = message.from_user.id
-        language = get_user_language_by_telegram_id(telegram_id)
-        await message.answer(get_donate_command_message(language), parse_mode=ParseMode.HTML)
-
+    language = get_language_of_single_user(message.from_user.id)
+    await message.answer(
+        get_donate_command_message(language), parse_mode=ParseMode.HTML
+    )
