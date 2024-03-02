@@ -1,3 +1,5 @@
+![Instagram post - 15](https://github.com/javoxirone/bilagon-ai-bot/assets/70471371/427945b7-6b5e-441d-bf3f-1fdac17b8bf2)
+
 # Bilag'on AI Bot Powered by GPT
 
 This project is a Telegram bot developed using the aiogram library in Python. The bot utilizes the power of GPT (Generative Pre-trained Transformer) to generate intelligent and contextually relevant responses. It can be used as a starting point for building advanced AI-powered Telegram bots.
