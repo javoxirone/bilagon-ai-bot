@@ -11,10 +11,12 @@ from keyboards.inline_keyboards import get_new_chat_keyboard
 from decorators.auth_decorators import initialize_user
 from config.integrations import gpt
 from aiogram import Bot
+from aiogram.exceptions import TelegramBadRequest
 from config.constants import TOKEN
 from aiogram.enums import ParseMode
 from services.utils import get_language_of_single_user
 from typing import TypedDict
+
 
 class Request(TypedDict):
     telegram_id: int
@@ -24,6 +26,7 @@ class Request(TypedDict):
 
 
 bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
+
 
 # TODO: need to be refactored, and maybe allocated to another file and folder
 async def generate_gpt_response(request: Request) -> None:
@@ -45,7 +48,7 @@ async def generate_gpt_response(request: Request) -> None:
         for chunk in result:
             chunks.append(chunk.choices[0].delta.get("content", ""))
             counter += 1
-            if counter >= 15:
+            if counter >= 30:
                 await bot.edit_message_text(
                     "".join(chunks) + " ▌",
                     telegram_id,
@@ -73,7 +76,11 @@ async def generate_gpt_response(request: Request) -> None:
             telegram_id,
             bot_message_id,
             parse_mode=ParseMode.HTML,
+            reply_markup=get_new_chat_keyboard(language),
         )
+    except TelegramBadRequest as e:
+        print(e)
+
     except Exception as e:
         print(e)
         if text:
@@ -104,15 +111,11 @@ async def message_handler(message: Message) -> None:
     """
     telegram_id = message.from_user.id
     language = get_language_of_single_user(telegram_id)
-    bot_message = await message.reply(
-        get_loading_message(language), parse_mode=None
-    )
+    bot_message = await message.reply(get_loading_message(language), parse_mode=None)
     context = {
         "telegram_id": telegram_id,
         "text": message.text,
         "language": language,
-        "bot_message_id": bot_message.message_id
+        "bot_message_id": bot_message.message_id,
     }
     await generate_gpt_response(context)
-
-    
