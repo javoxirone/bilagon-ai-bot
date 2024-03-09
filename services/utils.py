@@ -2,12 +2,13 @@ from datetime import datetime
 from database.user import User
 
 
-def format_datetime(dt) -> None | datetime:
+def format_datetime(dt:str) -> None | str:
     """
     This utility function gets datetime as an argument and returns either None or python datetime format.
 
-    :param dt: datetime in string format.
-    :return: None or python datetime format.
+    :param dt: datetime in string format (2022-12-31 23:59:59.123456).
+    :return: datetime in string format (23:59:59 31.12.2022).
+    :return: None.
     """
     if dt:
         return datetime.strptime(dt.split(".")[0], "%Y-%m-%d %H:%M:%S").strftime(
@@ -24,7 +25,7 @@ def get_single_user(telegram_id: int) -> dict:
     :return: Dictionary with user's information.
     """
     db = User()
-    user = db.get_user_by_telegram_id(telegram_id)
+    user: dict = db.get_user_by_telegram_id(telegram_id)
     db.close()
     return user
 
@@ -36,5 +37,6 @@ def get_language_of_single_user(telegram_id: int) -> str:
     :param telegram_id: Unique ID of the Telegram user.
     :return: Language code (e.g. EN, RU, UZ)
     """
-    user = get_single_user(telegram_id)
-    return user["language"]
+    user: dict = get_single_user(telegram_id)
+    language: str = user["language"]
+    return language

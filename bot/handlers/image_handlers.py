@@ -8,15 +8,13 @@ from pprint import pprint
 from bot.handlers.message_handlers import generate_gpt_response
 from services.utils import get_language_of_single_user
 from templates.message_templates import get_loading_message
-from tasks import delete_handled_image
+from tasks import delete_handled_file
 
-# TODO: add photo remover function
+# TODO: clear out the code, break down into utility functions
 async def image_handler(message: Message, bot: Bot) -> None:
     telegram_id = message.from_user.id
     language = get_language_of_single_user(telegram_id)
     bot_message = await message.reply(get_loading_message(language), parse_mode=None)
-    print(pytesseract.get_languages(config=''))
-    pprint(message)
     photo = message.photo[-1]
     message_text = message.caption
     path = f"media/images/{photo.file_id}.jpg"
@@ -25,7 +23,7 @@ async def image_handler(message: Message, bot: Bot) -> None:
     extracted_text = extract_text_from_bytes(path)
     
     # Deleting already used image
-    delete_handled_image.delay(path)
+    delete_handled_file.delay(path)
     context = {
         "telegram_id": message.from_user.id,
         "text": (

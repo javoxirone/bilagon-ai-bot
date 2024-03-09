@@ -7,7 +7,7 @@ app = Celery(
 
 
 @app.task
-def delete_handled_image(path: str) -> None:
+def delete_handled_file(path: str) -> None:
     try:
         os.remove(path)
     except OSError as e:

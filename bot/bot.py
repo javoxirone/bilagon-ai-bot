@@ -18,6 +18,9 @@ from bot.handlers.callback_handlers import (
 from bot.handlers.message_handlers import (
     message_handler,
 )
+from bot.handlers.voice_handlers import (
+    voice_message_handler,
+)
 from bot.handlers.image_handlers import image_handler
 from aiogram import Bot, Dispatcher
 from config.constants import TOKEN
@@ -46,3 +49,5 @@ dp.message.register(message_handler, F.text)
 # Media handlers
 dp.message.register(image_handler, F.photo)
 
+# Voice handlers
+dp.message.register(voice_message_handler, F.voice)
