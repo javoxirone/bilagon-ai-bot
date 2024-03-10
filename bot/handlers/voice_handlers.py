@@ -2,9 +2,7 @@ import subprocess
 from aiogram.types import Message
 from aiogram import Bot
 from config.integrations import sr, recognizer
-from templates.message_templates import get_loading_message
-from services.utils import get_language_of_single_user
-from bot.handlers.message_handlers import generate_gpt_response
+from bot.handlers.message_handlers import handle_gpt_response
 from tasks import delete_handled_file
 
 
@@ -18,21 +16,15 @@ async def voice_message_handler(message: Message, bot: Bot) -> None:
     subprocess.run(ffmpeg_command, shell=True)
     delete_handled_file.delay(voice_message_path)
     telegram_id = message.from_user.id
-    language = get_language_of_single_user(telegram_id)
-    bot_message = await message.reply(get_loading_message(language), parse_mode=None)
     with sr.AudioFile(voice_message_path_output) as source:
         audio_data = recognizer.record(source)
 
         try:
             # Convert audio to text
             extracted_text = recognizer.recognize_google(audio_data)
-            context = {
-                "telegram_id": message.from_user.id,
-                "text": extracted_text,
-                "bot_message_id": bot_message.message_id,
-                "language": language,
-            }
-            await generate_gpt_response(context)
+            await handle_gpt_response(
+                telegram_id, [message.message_id, extracted_text]
+            )
             print("The text from the audio file is: " + extracted_text)
         except sr.UnknownValueError:
             print("Could not understand the audio")
@@ -42,4 +34,3 @@ async def voice_message_handler(message: Message, bot: Bot) -> None:
             await message.answer("Could not request results")
         finally:
             delete_handled_file.delay(voice_message_path_output)
-
