@@ -1,13 +1,12 @@
-import openai
 import os
 from pprint import pprint
 from database.conversation import Conversation
-
+from openai import OpenAI
 
 class OpenAIAPI:
     def __init__(self, api_key=None):
         self.api_key: str = api_key or os.getenv("OPENAI_API")
-        openai.api_key = self.api_key
+        self.client = OpenAI(api_key=self.api_key)
         self.user_histories: dict = {}
 
     def generate_response(
@@ -28,7 +27,7 @@ class OpenAIAPI:
         :param stop: (optional) when the models should stop genearting response.
         """
         try:
-            response = openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model=model,
                 messages=messages,
                 temperature=temperature,
