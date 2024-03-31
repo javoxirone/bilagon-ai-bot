@@ -32,7 +32,7 @@ class Request(TypedDict):
 # TODO: need to be refactored, and maybe allocated to another file and folder
 async def handle_gpt_response(telegram_id: int, message: list) -> None:
     request_message_id, request_message = message
-    text = "."
+    text = ""
     language = get_language_of_single_user(telegram_id)
     bot_message = await bot.send_message(
         telegram_id,
