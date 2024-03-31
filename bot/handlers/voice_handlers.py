@@ -11,7 +11,6 @@ async def voice_message_handler(message: Message, bot: Bot) -> None:
     voice_message_path = f"media/voices/{voice.file_id}.ogg"
     voice_message_path_output = f"media/voices/{voice.file_id}.wav"
     await bot.download(voice, destination=voice_message_path)
-    await message.answer("Voice message downloaded successfully!")
     ffmpeg_command = f"ffmpeg -i {voice_message_path} {voice_message_path_output}"
     subprocess.run(ffmpeg_command, shell=True)
     delete_handled_file.delay(voice_message_path)

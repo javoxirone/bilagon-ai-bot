@@ -28,9 +28,6 @@ async def document_handler(message: Message, bot: Bot) -> None:
 
     path = f"media/documents/{file_id}.{file_extension}"
     await bot.download(file_id, destination=path)
-    await message.answer(
-        f"Document ({message.document.file_size}) downloaded successfully!"
-    )
 
     file_content = recognize_function_by_file_extension(path, file_extension)
 
