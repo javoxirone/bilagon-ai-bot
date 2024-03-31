@@ -1,4 +1,4 @@
-from openai import error
+from openai import OpenAIError
 from templates.message_templates import (
     get_loading_message,
     get_openai_error_message,
@@ -45,21 +45,22 @@ async def handle_gpt_response(telegram_id: int, message: list) -> None:
         add_message_of_user_to_conversation(telegram_id, request_message)
         messages = get_conversations_of_single_user(telegram_id)
 
-        result = gpt.generate_response(max_tokens=2000, messages=messages)
+        stream = gpt.generate_response(max_tokens=2000, messages=messages)
         chunks = []
         counter = 0
-        for chunk in result:
-            chunks.append(chunk.choices[0].delta.get("content", ""))
-            counter += 1
-            if counter >= 30:
-                await bot.edit_message_text(
-                    "".join(chunks) + " ▌",
-                    telegram_id,
-                    bot_message_id,
-                    parse_mode=None,
-                    reply_markup=get_new_chat_keyboard(language),
-                )
-                counter = 0
+        for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                chunks.append(chunk.choices[0].delta.content)
+                counter += 1
+                if counter >= 30:
+                    await bot.edit_message_text(
+                        "".join(chunks) + " ▌",
+                        telegram_id,
+                        bot_message_id,
+                        parse_mode=None,
+                        reply_markup=get_new_chat_keyboard(language),
+                    )
+                    counter = 0
 
         text = "".join(chunks)
         await bot.edit_message_text(
@@ -71,7 +72,7 @@ async def handle_gpt_response(telegram_id: int, message: list) -> None:
         )
         add_message_of_assistant_to_conversation(telegram_id, text)
 
-    except error.OpenAIError as e:
+    except OpenAIError as e:
         print(e)
         await bot.edit_message_text(
             get_openai_error_message(language),
