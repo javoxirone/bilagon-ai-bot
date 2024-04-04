@@ -13,7 +13,6 @@ async def voice_message_handler(message: Message, bot: Bot) -> None:
     await bot.download(voice, destination=voice_message_path)
     ffmpeg_command = f"ffmpeg -i {voice_message_path} {voice_message_path_output}"
     subprocess.run(ffmpeg_command, shell=True)
-    delete_handled_file.delay(voice_message_path)
     telegram_id = message.from_user.id
     with sr.AudioFile(voice_message_path_output) as source:
         audio_data = recognizer.record(source)
@@ -21,9 +20,7 @@ async def voice_message_handler(message: Message, bot: Bot) -> None:
         try:
             # Convert audio to text
             extracted_text = recognizer.recognize_google(audio_data)
-            await handle_gpt_response(
-                telegram_id, [message.message_id, extracted_text]
-            )
+            await handle_gpt_response(telegram_id, [message.message_id, extracted_text])
             print("The text from the audio file is: " + extracted_text)
         except sr.UnknownValueError:
             print("Could not understand the audio")
@@ -32,4 +29,5 @@ async def voice_message_handler(message: Message, bot: Bot) -> None:
             print("Could not request results; {0}".format(e))
             await message.answer("Could not request results")
         finally:
+            delete_handled_file.delay(voice_message_path)
             delete_handled_file.delay(voice_message_path_output)
