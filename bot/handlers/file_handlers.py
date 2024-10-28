@@ -16,7 +16,7 @@ async def document_handler(message: Message, bot: Bot) -> None:
     """
     # DOCX, TXT, PDF
     document = message.document
-    if document.file_size > 1_000_000:
+    if document.file_size > 3_000_000:
         await message.answer("Document size sould be less than 1mb!")
         return
 

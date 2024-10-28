@@ -1,3 +1,4 @@
+import platform
 import pytesseract
 from PIL import Image
 from aiogram.types import Message
@@ -5,8 +6,6 @@ from aiogram import Bot
 from bot.handlers.message_handlers import handle_gpt_response
 from tasks import delete_handled_file
 
-
-# TODO: clear out the code, break down into utility functions
 async def image_handler(message: Message, bot: Bot) -> None:
     telegram_id = message.from_user.id
     photo = message.photo[-1]
@@ -14,7 +13,7 @@ async def image_handler(message: Message, bot: Bot) -> None:
     path = f"media/images/{photo.file_id}.jpg"
     await bot.download(photo, destination=path)
 
-    extracted_text = extract_text_from_bytes(path)
+    extracted_text = extract_text_from_image(path)
     # Deleting already used image
     delete_handled_file.delay(path)
     result_text = (
@@ -22,8 +21,17 @@ async def image_handler(message: Message, bot: Bot) -> None:
     )
     await handle_gpt_response(telegram_id, [message.message_id, result_text])
 
-
-def extract_text_from_bytes(image_path: str) -> str:
+def extract_text_from_image(image_path: str) -> str:
     img = Image.open(image_path)
+    set_tesseract_cmd()
     extracted_text = pytesseract.image_to_string(img)
     return extracted_text
+
+def set_tesseract_cmd():
+    if platform.system() == 'Windows':
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    elif platform.system() == 'Linux':
+        pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'  # Default path for Ubuntu
+    else:
+        raise EnvironmentError("Unsupported operating system. Please set the Tesseract command manually.")
+
