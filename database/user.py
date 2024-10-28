@@ -10,7 +10,7 @@ class User(Database):
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 user_id SERIAL PRIMARY KEY,
-                telegram_id INTEGER UNIQUE,
+                telegram_id BIGINT UNIQUE,
                 username TEXT,
                 first_name TEXT,
                 last_name TEXT,
