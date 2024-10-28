@@ -45,7 +45,7 @@ async def handle_gpt_response(telegram_id: int, message: list) -> None:
         add_message_of_user_to_conversation(telegram_id, request_message)
         messages = get_conversations_of_single_user(telegram_id)
 
-        stream = gpt.generate_response(max_tokens=2000, messages=messages)
+        stream = gpt.generate_response(max_tokens=1000, messages=messages)
         chunks = []
         counter = 0
         for chunk in stream:

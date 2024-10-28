@@ -14,7 +14,7 @@ class OpenAIAPI:
 
     def generate_response(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = "gpt-4o-mini",
         max_tokens: int = 50,
         messages: list | None = None,
         temperature: float = 0.7,
