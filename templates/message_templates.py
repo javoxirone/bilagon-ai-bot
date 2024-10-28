@@ -189,7 +189,7 @@ def get_donate_command_message(lang: str) -> str:
               "\n"
               "Sizning chat-bot tajribangizni yaxshilashga yordam bering. Sizning xayriyangiz uni rivojlantirishni ta'minlaydi, siz uchun eng yaxshi tajribani taqdim etadi.\n"
               "\n"
-              "🙏 Karta raqami: <code>8600140453972474</code>\n"
+              "🙏 Karta raqami: <code>5614682115259642</code>\n"
               "\n"
               "Rahmat,\n"
               "Bilag'on AI Bot jamoasi\n",
@@ -200,7 +200,7 @@ def get_donate_command_message(lang: str) -> str:
               "\n"
               "Помогите нам усовершенствовать ваш опыт чата. Ваше пожертвование обеспечит его развитие, гарантируя лучшего бота для вас.\n"
               "\n"
-              "🙏 Карта для пожертвование: <code>8600140453972474</code>\n"
+              "🙏 Карта для пожертвование: <code>5614682115259642</code>\n"
               "\n"
               "Спасибо,\n"
               "Команда Bilag'on AI Bot\n",
@@ -211,7 +211,7 @@ def get_donate_command_message(lang: str) -> str:
               "\n"
               "Help us enhance your chatbot experience. Your donation fuels its growth and improvement, ensuring a better copilot for you.\n"
               "\n"
-              "🙏 Card Number: <code>8600140453972474</code>\n"
+              "🙏 Card Number: <code>5614682115259642</code>\n"
               "\n"
               "Thank you,\n"
               "Bilag'on AI Bot Team\n"
@@ -235,3 +235,7 @@ def get_bot_error_message(lang):
         'en': "Something went wrong! Try starting a new conversation 👇"
     }
     return message[lang]
+
+
+
+
