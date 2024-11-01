@@ -25,14 +25,10 @@ async def image_handler(message: Message, bot: Bot) -> None:
 
 
 def extract_text_from_image(image_path: str, lang: str) -> str:
-    lang_dict = {
-        "ru": "rus",
-        "uz": "uzb",
-        "en": "eng",
-    }
+    langs = "eng+rus+uzb"
     img = Image.open(image_path)
     set_tesseract_cmd()
-    extracted_text = pytesseract.image_to_string(img, lang=lang_dict[lang])
+    extracted_text = pytesseract.image_to_string(img, lang=langs)
     return extracted_text
 
 
