@@ -29,7 +29,6 @@ class Request(TypedDict):
     language: str
 
 
-# TODO: need to be refactored, and maybe allocated to another file and folder
 async def handle_gpt_response(telegram_id: int, message: list) -> None:
     request_message_id, request_message = message
     text = ""
