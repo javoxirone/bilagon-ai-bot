@@ -1,3 +1,5 @@
+import os
+
 from aiogram.types import Message, File
 from aiogram import Bot
 from pathlib import Path
@@ -5,6 +7,9 @@ from pathlib import Path
 from gpt.gpt import OpenAIAPI
 from services.gpt_services import handle_gpt_response
 from tasks import delete_handled_file
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 async def download_file(file: File, file_name: str, path: str, bot: Bot):
@@ -25,7 +30,7 @@ async def voice_message_handler(message: Message, bot: Bot) -> None:
 
     destination = f"{path}/{voice_file.file_id}.wav"
     with open(destination, "rb") as audio_file:
-        openai = OpenAIAPI()
+        openai = OpenAIAPI(api_key=os.getenv('OPENAI_API_KEY'), base_url="https://api.openai.com/v1/")
         transcription = openai.client.audio.transcriptions.create(
             model="whisper-1",
             file=audio_file

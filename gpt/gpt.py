@@ -7,9 +7,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class OpenAIAPI:
-    def __init__(self, api_key=None):
-        self.api_key: str = api_key or os.getenv("OPENAI_API_KEY")
-        self.client = OpenAI(api_key=self.api_key, base_url="https://api.x.ai/v1")
+    def __init__(self, api_key=None, base_url=None):
+        self.api_key: str = api_key or os.getenv("XAI_API_KEY")
+        self.client = OpenAI(api_key=self.api_key, base_url=base_url or "https://api.x.ai/v1")
         self.user_histories: dict = {}
 
     def generate_response(
