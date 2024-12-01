@@ -9,12 +9,12 @@ load_dotenv()
 class OpenAIAPI:
     def __init__(self, api_key=None):
         self.api_key: str = api_key or os.getenv("OPENAI_API_KEY")
-        self.client = OpenAI(api_key=self.api_key)
+        self.client = OpenAI(api_key=self.api_key, base_url="https://api.x.ai/v1")
         self.user_histories: dict = {}
 
     def generate_response(
         self,
-        model: str = "gpt-4o-mini",
+        model: str = "grok-beta",
         max_tokens: int = 50,
         messages: list | None = None,
         temperature: float = 0.7,
