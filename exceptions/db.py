@@ -1,6 +1,6 @@
 class DBError(Exception):
     """
-    DBError exception, it is raised when Operational Error occurs.
+    DBError exception is raised when Operational Error occurs.
     """
 
     def __init__(self, message: str = "No additional message"):
@@ -15,25 +15,22 @@ class DBError(Exception):
 
 class UserAlreadyExistsError(Exception):
     """
-    UserAlreadyExistsError exception, it is raised when a user with certain telegram_id already exists in the database.
+    UserAlreadyExistsError exception is raised when a user with certain telegram_id already exists in the database.
     """
 
-    def __init__(self, telegram_id: int, message: str = "No additional message"):
+    def __init__(self, message: str = "No additional message"):
         """
         Initialize the custom UserAlreadyExistsError exception object.
 
         :param message: Additional error message.
         :type message: str
-
-        :param telegram_id: Unique Telegram ID of a user.
-        :type telegram_id: int
         """
-        super().__init__(f"User with {telegram_id} telegram id already exists in the database ({message})")
+        super().__init__(f"User already exists({message})")
 
 
 class DataTypeInsertError(Exception):
     """
-    DataTypeInsertError exception, it is raised when you try to insert a data that violates the data type constraints.
+    DataTypeInsertError exception is raised when you try to insert a data that violates the data type constraints.
     """
 
     def __init__(self, message: str = "No additional message"):
@@ -44,3 +41,18 @@ class DataTypeInsertError(Exception):
         :type message: str
         """
         super().__init__(f"Could not insert data because of data type violation ({message})")
+
+
+class UserDoesNotExist(Exception):
+    """
+    UserDoesNotExist exception is raised when a user with certain telegram_id does not exist in the database.
+    """
+
+    def __init__(self, message: str = "No additional message"):
+        """
+        Initialize the custom UserDoesNotExist exception object.
+
+        :param message: Additional error message.
+        :type message: str
+        """
+        super().__init__(f"User does not exist ({message})")

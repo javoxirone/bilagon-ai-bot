@@ -1,10 +1,18 @@
-from typing import Iterable
+from typing import TypedDict, Iterable, Union
 
-from psycopg2 import IntegrityError, OperationalError
-from redis import DataError
-from psycopg2.extensions import cursor as CursorType
-from exceptions.db import UserAlreadyExistsError, DBError, DataTypeInsertError
+from types.db import UserDataType
 from .base import Database
+from psycopg2.extensions import cursor as CursorType
+from psycopg2 import (
+    IntegrityError,
+    OperationalError,
+    DataError,
+)
+from exceptions.db import (
+    UserAlreadyExistsError,
+    DBError,
+    DataTypeInsertError, UserDoesNotExist,
+)
 
 
 class User(Database):
@@ -59,13 +67,113 @@ class User(Database):
                 db_session.conn.commit()
         except IntegrityError:
             db_session.conn.rollback()
-            raise UserAlreadyExistsError(telegram_id)
+            raise UserAlreadyExistsError(f"Provided telegram_id is {telegram_id}")
         except DataError:
             db_session.conn.rollback()
             raise DataTypeInsertError()
         except OperationalError:
             db_session.conn.rollback()
             raise DBError()
+
+    def get_user(self, telegram_id: int) -> UserDataType:
+        """
+        Retrieve user information from the database using the given telegram ID.
+
+        This method queries the database for a user with the specified telegram ID.
+        If the user is found, their data is returned in a dictionary format.
+        If the user does not exist or any database errors occur during the process,
+        appropriate exceptions are raised.
+
+        :param telegram_id: Unique identifier for the user in the telegram system
+        :type telegram_id: int
+        :return: A dictionary containing user information if found
+        :rtype: UserDataType
+        :raises UserDoesNotExist: If no user is found with the provided telegram ID
+        :raises DBError: If an operational error occurs within the database
+        :raises DataTypeInsertError: If a data error occurs while inserting the data type
+        
+        Examples:
+            >>> db = User()
+            >>> db.get_user(123456789)
+            {
+                "user_id": 1,
+                "telegram_id": 123456789,
+                "username": "john_smith",
+                "first_name": "John",
+                "last_name": "Smith",
+                "created_at": "2023-03-15T12:34:56",
+                "language": "en"
+            }
+        """
+        try:
+            with self as db_session:
+                cursor: CursorType = db_session.conn.cursor()
+                cursor.execute('SELECT * FROM users WHERE telegram_id = %s', (telegram_id,))
+                user_data = cursor.fetchone()
+                if not user_data:
+                    raise UserDoesNotExist(f"Provided telegram_id is {telegram_id}")
+                user_info: UserDataType = {
+                    "user_id": user_data[0],
+                    "telegram_id": user_data[1],
+                    "username": user_data[2],
+                    "first_name": user_data[3],
+                    "last_name": user_data[4],
+                    "created_at": user_data[5],
+                    "language": user_data[6]
+                }
+                return user_info
+        except OperationalError:
+            raise DBError()
+        except DataError:
+            raise DataTypeInsertError()
+
+    def get_user_list(self):
+        """
+        Retrieves a list of users from the database. The users are fetched from the
+        'users' table and the raw data is transformed into a list of dictionaries,
+        each representing a user with specific fields.
+
+        The function attempts to establish a database session and execute an SQL
+        query to fetch all records from the 'users' table. Each record is then
+        serialized into a dictionary format suitable for further processing or
+        usage. If the users list is empty, an empty list is returned. In the event
+        of database operation errors, specific exceptions are raised to indicate
+        the type of failure encountered.
+
+        :return: A list of dictionaries, each containing user data from the database.
+        :rtype: list[UserDataType]
+
+        :raises DBError: If there is an error establishing a database connection
+                         or executing the database operation.
+        :raises DataTypeInsertError: If there is an error related to data types
+                                     during data retrieval or processing.
+        """
+        try:
+            with self as db_session:
+                cursor: CursorType = db_session.conn.cursor()
+                cursor.execute('SELECT * FROM users')
+                user_list_raw: list[tuple[any, ...]] = cursor.fetchall()
+                user_list_serialized: list[UserDataType] = []
+
+                if not user_list_raw:
+                    return []
+
+                for user_data_raw in user_list_raw:
+                    user_data_serialized: UserDataType = {
+                        "user_id": user_data_raw[0],
+                        "telegram_id": user_data_raw[1],
+                        "username": user_data_raw[2],
+                        "first_name": user_data_raw[3],
+                        "last_name": user_data_raw[4],
+                        "created_at": user_data_raw[5],
+                        "language": user_data_raw[6]
+                    }
+                    user_list_serialized.append(user_data_serialized)
+                return user_list_serialized
+        except OperationalError:
+            raise DBError()
+        except DataError:
+            raise DataTypeInsertError()
 
     def user_exists(self, telegram_id: int) -> bool:
         """

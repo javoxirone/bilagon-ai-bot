@@ -1,7 +1,11 @@
-from aiogram.types import User as UserType
 from database.user import User
-from exceptions.db import UserAlreadyExistsError, DataTypeInsertError, DBError
+from aiogram.types import User as UserType
 from exceptions.service import ServerError
+from exceptions.db import (
+    UserAlreadyExistsError,
+    DataTypeInsertError,
+    DBError,
+)
 
 
 def check_if_user_exists(telegram_id: int) -> bool:
