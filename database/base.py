@@ -3,8 +3,8 @@ import psycopg2
 
 
 class Database:
-    def __init__(self, db_name=None):
-        self.db_name = db_name or os.getenv("DB_NAME")
+    def __init__(self):
+        self.db_name = os.getenv("DB_NAME")
         self.conn = psycopg2.connect(
             database=self.db_name,
             user=os.getenv("DB_USER"),
@@ -13,5 +13,11 @@ class Database:
             port=os.getenv("DB_PORT")
         )
 
-    def close(self):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            print(f"An exception occurred: {exc_type}, {exc_val}, {exc_tb}")
         self.conn.close()
+        return False

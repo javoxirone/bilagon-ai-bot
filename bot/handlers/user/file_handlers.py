@@ -1,6 +1,6 @@
 from aiogram.types import Message
-from services.file_services import recognize_function_by_file_extension
-from services.gpt_services import handle_gpt_response
+from services.file import recognize_function_by_file_extension
+from services.gpt import handle_gpt_response
 from aiogram import Bot
 from tasks import delete_handled_file
 

@@ -237,5 +237,11 @@ def get_bot_error_message(lang):
     return message[lang]
 
 
-
+def get_chat_mode_message(lang):
+    message = {
+        'uz': "Bot ixtisoslashishini xohlagan suhbat rejimini tanlang.",
+        'ru': "Выберите режим чата, в котором бот будет специализироваться.",
+        'en': "Select the chat mode you want the bot to specialize in."
+    }
+    return message[lang]
 
