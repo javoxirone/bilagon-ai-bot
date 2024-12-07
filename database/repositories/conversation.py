@@ -152,7 +152,6 @@ class Conversation(Database):
             raise DataTypeError(
                 f"Wrong data type was passed while getting all conversations related to the user with telegram_id {telegram_id}")
 
-
 class Conversation2(Database):
     def __init__(self, db_name=None):
         super().__init__(db_name)
