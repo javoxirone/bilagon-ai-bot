@@ -1,4 +1,4 @@
-from database.user import User
+from database.repositories.user import User
 
 
 

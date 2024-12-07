@@ -23,13 +23,11 @@ async def command_start_handler(message: Message) -> None:
     await message.answer(get_start_command_message(user["language"]))
 
 
-@initialize_user
 async def command_help_handler(message: Message) -> None:
     language = get_language_of_single_user(message.from_user.id)
     await message.answer(get_help_command_message(language), parse_mode=ParseMode.HTML)
 
 
-@initialize_user
 async def command_settings_handler(message: Message) -> None:
     telegram_id: int = message.from_user.id
     user: dict = get_single_user(telegram_id)
@@ -42,7 +40,6 @@ async def command_settings_handler(message: Message) -> None:
         parse_mode=ParseMode.HTML,
     )
 
-@initialize_user
 async def command_mode_handler(message: Message) -> None:
     telegram_id: int = message.from_user.id
     user: dict = get_single_user(telegram_id)
@@ -53,7 +50,6 @@ async def command_mode_handler(message: Message) -> None:
         parse_mode=ParseMode.HTML,
     )
 
-@initialize_user
 async def command_language_handler(message: Message) -> None:
     user = get_single_user(message.from_user.id)
     await message.answer(
@@ -61,13 +57,11 @@ async def command_language_handler(message: Message) -> None:
     )
 
 
-@initialize_user
 async def command_examples_handler(message: Message) -> None:
     language = get_language_of_single_user(message.from_user.id)
     await message.answer(get_examples_command_message(language))
 
 
-@initialize_user
 async def command_donate_handler(message: Message) -> None:
     language = get_language_of_single_user(message.from_user.id)
     await message.answer(

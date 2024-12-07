@@ -9,3 +9,8 @@ class UserDataType(TypedDict):
     last_name: str
     created_at: str
     language: str
+
+
+class ConversationDataType(TypedDict):
+    role: str
+    content: str

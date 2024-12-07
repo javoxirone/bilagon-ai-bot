@@ -1,4 +1,4 @@
-from database.conversation import Conversation
+from database.repositories.conversation import Conversation
 
 def add_message_of_user_to_conversation(telegram_id:int, text:str) -> None:
     conversation_db = Conversation()

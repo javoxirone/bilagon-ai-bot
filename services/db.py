@@ -1,9 +1,9 @@
-from database.user import User
+from database.repositories.user import User
 from aiogram.types import User as UserType
 from exceptions.service import ServerError
-from exceptions.db import (
+from exceptions.database import (
     UserAlreadyExistsError,
-    DataTypeInsertError,
+    DataTypeError,
     DBError,
 )
 
@@ -30,7 +30,7 @@ def check_if_user_exists(telegram_id: int) -> bool:
         return status
     except DBError:
         raise ServerError("Internal database error!")
-    except DataTypeInsertError:
+    except DataTypeError:
         raise ServerError("Data type insert error!")
 
 
@@ -57,7 +57,7 @@ def add_new_user(data: UserType) -> None:
         db.add_user(telegram_id, username, first_name, last_name, lang)
     except UserAlreadyExistsError as e:
         raise ServerError("Such user already exists!")
-    except DataTypeInsertError:
+    except DataTypeError:
         raise ServerError("Data type insert error!")
     except DBError:
         raise ServerError("Internal database error!")
