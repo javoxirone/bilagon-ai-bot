@@ -165,3 +165,23 @@ class CommitError(Exception):
         if self.original_exception:
             return f"{super().__str__()} (Original exception: {self.original_exception})"
         return super().__str__()
+
+
+class NoRecordsFound(Exception):
+    """
+    Exception raised when no records are found in the database.
+
+    This exception is intended to indicate that an attempted retrieval of data
+    from the database has resulted in no records being found. It can include
+    an additional message for context.
+    """
+    def __init__(self, message: str = "No additional message"):
+        """
+        Represents a custom exception that is raised when no records are found in the database.
+        This exception accepts an optional message to provide additional information about the
+        specific context or reason for the absence of records.
+
+        :param message: A string providing additional context or information about the
+            absence of records in the database. Defaults to "No additional message".
+        """
+        super().__init__(f"No records found on database ({message})")

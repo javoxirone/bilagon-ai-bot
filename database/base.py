@@ -18,6 +18,7 @@ class Database:
     :ivar conn: Connection object to the database.
     :type conn: psycopg2.extensions.connection
     """
+
     def __init__(self):
         """
         Initialization of the base class for repositories to work with database.
