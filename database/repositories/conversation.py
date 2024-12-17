@@ -12,20 +12,6 @@ class Conversation(Database):
         super().__init__()
 
     def _serialize(self, conversation_data_raw: tuple[any, ...]) -> ConversationDataType:
-        """
-        Serializes raw conversation data into a dictionary format with specified keys
-        for role and content. The input is expected to be a tuple with at least two
-        elements. This method ensures the conversation data is structured in a standard
-        format, which can be used for further processing or storage.
-
-        :param conversation_data_raw: A tuple where the first element is the role and
-                                      the second is the content, representing parts of
-                                      a conversation.
-        :return: Serialized conversation data as a dictionary with 'role' and 'content'
-                 keys.
-        :raises ValueError: If 'conversation_data_raw' does not contain at least two
-                            elements or contains invalid data types.
-        """
         try:
             role: str = conversation_data_raw[0]
             content: str = conversation_data_raw[1]
@@ -39,26 +25,6 @@ class Conversation(Database):
             raise ValueError("Invalid data type encountered while processing conversation data") from e
 
     def add_conversation(self, telegram_id: int, role: str, message: str) -> NoReturn:
-        """
-        Adds a conversation entry to the database associated with a specific user
-        identified by their Telegram ID. The function first retrieves the user data
-        based on the provided Telegram ID, then inserts a new conversation record
-        into the database with the specified user role and message. The insertion
-        operation or data retrieval may result in certain exceptions being raised
-        if the data is invalid or the database operation fails.
-
-        :param telegram_id: The unique identifier for a user in Telegram.
-        :type telegram_id: int
-        :param role: The role of the user in the conversation.
-        :type role: str
-        :param message: The message content of the conversation.
-        :type message: str
-        :raises RelatedRecordDoesNotExist: If the user with the given Telegram ID does
-            not exist in the database.
-        :raises DBError: If a database error occurs during the operation.
-        :raises DataTypeError: If incorrect data types are provided or detected during
-            the execution.
-        """
         try:
             user_id: int = get_user_id_by_telegram_id(telegram_id)
         except UserDoesNotExist:
@@ -80,20 +46,6 @@ class Conversation(Database):
                 f"Internal database error occurred while adding a new conversation for a user with telegram_id {telegram_id}")
 
     def delete_all_conversations(self, telegram_id: int) -> NoReturn:
-        """
-        Deletes all conversation records from the database associated with a user identified by the given
-        telegram_id. The method retrieves the user_id related to the telegram_id and deletes all records in
-        the conversations table with this user_id. If the telegram_id does not correspond to any user, an
-        exception is raised. Similarly, database operation errors are caught and raised as specific exceptions.
-
-        :param telegram_id: Integer identifier of the user in the Telegram platform.
-
-        :raises RelatedRecordDoesNotExist: If no user with the specified telegram_id exists in the database.
-        :raises DataTypeError: If an incorrect data type is encountered during deletion.
-        :raises DBError: If an internal database error occurs during the operation.
-
-        :return: None
-        """
         try:
             user_id: int = get_user_id_by_telegram_id(telegram_id)
         except UserDoesNotExist:
@@ -110,24 +62,12 @@ class Conversation(Database):
             raise DBError(
                 f"Internal database error occurred while deleting all conversations related to the user with telegram_id {telegram_id}")
 
-    def get_all_conversations(self, telegram_id: int) -> list[ConversationDataType]:
-        """
-        Fetch all conversations for a given user identified by their telegram ID. This method interfaces
-        with the database to retrieve conversation records associated with the specified user, ordered by
-        creation date.
-
-        :param telegram_id: The unique identifier for a user on Telegram.
-        :type telegram_id: int
-        :return: A list containing serialized conversation data for the user.
-        :rtype: list
-        :raises RelatedRecordDoesNotExist: If the user ID associated with the telegram ID does not exist.
-        :raises DBError: For internal database errors during the retrieval process.
-        :raises DataTypeError: If incorrect data types are encountered during database operations.
-        """
+    def get_raw_conversation_list(self, telegram_id: int) -> list[tuple[any, ...]]:
         try:
             user_id: int = get_user_id_by_telegram_id(telegram_id)
         except UserDoesNotExist:
             raise RelatedRecordDoesNotExist(f"User with telegram_id {telegram_id} does not exist in the database.")
+
         try:
             with self as db_session:
                 cursor: CursorType = db_session.conn.cursor()
@@ -137,11 +77,24 @@ class Conversation(Database):
                     ORDER BY created_at
                 ''', (user_id,))
                 conversations: list[tuple[any, ...]] = cursor.fetchall()
-                conversation_list: list[ConversationDataType] = []
-                for conversation_data_raw in conversations:
-                    conversation_data_serialized: ConversationDataType = self._serialize(conversation_data_raw)
-                    conversation_list.append(conversation_data_serialized)
-                return conversation_list
+                return conversations
+        except OperationalError:
+            raise DBError(
+                f"Internal database error occurred while getting all conversations related to the user with telegram_id {telegram_id}")
+        except DataError:
+            raise DataTypeError(
+                f"Wrong data type was passed while getting all conversations related to the user with telegram_id {telegram_id}")
+
+    def get_all_conversations(self, telegram_id: int) -> list[ConversationDataType]:
+        try:
+            conversations = self.get_raw_conversation_list(telegram_id)
+            conversation_list: list[ConversationDataType] = []
+            for conversation_data_raw in conversations:
+                conversation_data_serialized: ConversationDataType = self._serialize(conversation_data_raw)
+                conversation_list.append(conversation_data_serialized)
+            return conversation_list
+        except RelatedRecordDoesNotExist:
+            raise
         except OperationalError:
             raise DBError(
                 f"Internal database error occurred while getting all conversations related to the user with telegram_id {telegram_id}")

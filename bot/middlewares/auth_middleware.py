@@ -1,8 +1,6 @@
 from typing import Callable, Dict, Any, Awaitable
-
 from aiogram import Bot
 from aiogram.types import Update, User as UserType
-from pprint import pprint
 from keyboards.inline_keyboards import get_lang_keyboard
 from services.db import (check_if_user_exists, add_new_user, )
 

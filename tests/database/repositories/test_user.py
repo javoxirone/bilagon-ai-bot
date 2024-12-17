@@ -1,12 +1,12 @@
-from unittest.mock import patch, MagicMock, Mock
 import pytest
+from unittest.mock import patch, Mock
 from psycopg2 import DataError, IntegrityError
-
 from database.repositories.user import User
 from exceptions.database import NoRecordsFound, UserDoesNotExist, DataTypeError, UserAlreadyExistsError
+from tests.database.repositories.base import TestRepositoryBase
 
 
-class TestUser:
+class TestUser(TestRepositoryBase):
     def setup_method(self):
         self.db = None
         self.user_id = 1
@@ -35,17 +35,6 @@ class TestUser:
             mock_connect.return_value = mock_connection
             self.db = User()
             self.db.conn = mock_connection
-
-    def teardown_method(self, method):
-        self.__dict__.clear()
-
-
-    def _setup_mock_cursor(self, return_value=None, method_name="fetchall"):
-        mock_cursor = Mock()
-        setattr(mock_cursor, method_name, Mock(return_value=return_value))
-        self.db.conn = Mock()
-        self.db.conn.cursor.return_value = mock_cursor
-        return getattr(mock_cursor, method_name)
 
     def test_serialize_successful(self):
         method_result = self.db._serialize(self.raw_user_data)

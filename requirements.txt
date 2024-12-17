@@ -19,6 +19,7 @@ click-didyoumean==0.3.0
 click-plugins==1.1.1
 click-repl==0.3.0
 colorama==0.4.6
+coverage==7.6.9
 cryptography==41.0.7
 dataclasses==0.6
 distro==1.9.0
@@ -32,6 +33,7 @@ h11==0.14.0
 httpcore==1.0.5
 httpx==0.27.0
 idna==3.4
+iniconfig==2.0.0
 Jinja2==3.1.4
 kombu==5.3.5
 llvmlite==0.43.0
@@ -49,6 +51,8 @@ openai==1.14.3
 openai-whisper==20240930
 packaging==23.2
 pillow==10.2.0
+pip-check-reqs==2.5.3
+pluggy==1.5.0
 prompt-toolkit==3.0.43
 psycopg2-binary==2.9.9
 pycparser==2.21
@@ -60,6 +64,8 @@ PyMuPDF==1.23.7
 PyMuPDFb==1.23.7
 PyPDF2==3.0.1
 pytesseract==0.3.10
+pytest==8.3.4
+pytest-cov==6.0.0
 python-dateutil==2.9.0.post0
 python-docx==1.1.0
 python-dotenv==1.0.0
@@ -85,5 +91,3 @@ vine==5.1.0
 wcwidth==0.2.13
 wheel==0.41.2
 yarl==1.9.2
-
-pytest~=8.3.4
