@@ -24,12 +24,18 @@ class Conversation(Database):
         except TypeError as e:
             raise ValueError("Invalid data type encountered while processing conversation data") from e
 
-    def add_conversation(self, telegram_id: int, role: str, message: str) -> NoReturn:
+    def _get_user_id(self, telegram_id: int) -> int:
         try:
             user_id: int = get_user_id_by_telegram_id(telegram_id)
+            return user_id
         except UserDoesNotExist:
             raise RelatedRecordDoesNotExist(f"User with telegram_id {telegram_id} does not exist in the database.")
 
+    def add_conversation(self, telegram_id: int, role: str, message: str) -> NoReturn:
+        try:
+            user_id: int = self._get_user_id(telegram_id)
+        except RelatedRecordDoesNotExist:
+            raise
         try:
             with self as db_session:
                 cursor: CursorType = db_session.conn.cursor()
@@ -47,9 +53,9 @@ class Conversation(Database):
 
     def delete_all_conversations(self, telegram_id: int) -> NoReturn:
         try:
-            user_id: int = get_user_id_by_telegram_id(telegram_id)
-        except UserDoesNotExist:
-            raise RelatedRecordDoesNotExist(f"User with telegram_id {telegram_id} does not exist in the database.")
+            user_id: int = self._get_user_id(telegram_id)
+        except RelatedRecordDoesNotExist:
+            raise
         try:
             with self as db_session:
                 cursor: CursorType = db_session.conn.cursor()
@@ -64,9 +70,9 @@ class Conversation(Database):
 
     def get_raw_conversation_list(self, telegram_id: int) -> list[tuple[any, ...]]:
         try:
-            user_id: int = get_user_id_by_telegram_id(telegram_id)
-        except UserDoesNotExist:
-            raise RelatedRecordDoesNotExist(f"User with telegram_id {telegram_id} does not exist in the database.")
+            user_id: int = self._get_user_id(telegram_id)
+        except RelatedRecordDoesNotExist:
+            raise
 
         try:
             with self as db_session:
@@ -85,7 +91,7 @@ class Conversation(Database):
             raise DataTypeError(
                 f"Wrong data type was passed while getting all conversations related to the user with telegram_id {telegram_id}")
 
-    def get_all_conversations(self, telegram_id: int) -> list[ConversationDataType]:
+    def get_serialized_conversation_list(self, telegram_id: int) -> list[ConversationDataType]:
         try:
             conversations = self.get_raw_conversation_list(telegram_id)
             conversation_list: list[ConversationDataType] = []
