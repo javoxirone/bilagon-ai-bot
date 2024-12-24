@@ -12,7 +12,7 @@ from config.constants import (
     BASE_WEBHOOK_URL,
     WEBHOOK_PATH,
     WEBHOOK_SECRET,
-    TOKEN, WEB_SERVER_HOST, WEB_SERVER_PORT,
+    BOT_TOKEN, WEB_SERVER_HOST, WEB_SERVER_PORT,
 )
 
 # Set up logging for better debugging
@@ -42,7 +42,7 @@ def main() -> None:
     """
     logger.info("Starting bot application...")
 
-    bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
+    bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
     dp = Dispatcher()
     dp.include_router(user_router)
     dp.include_router(admin_router)

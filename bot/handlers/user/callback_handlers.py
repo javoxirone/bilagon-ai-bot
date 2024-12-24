@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery
 from templates.message_templates import (get_new_chat_message, )
 from config.integrations import gpt
 from aiogram import Bot
-from config.constants import TOKEN
+from config.constants import BOT_TOKEN as TOKEN
 from aiogram.enums import ParseMode
 
 bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)

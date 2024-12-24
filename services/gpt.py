@@ -15,7 +15,7 @@ from services.conversation import (
 from typing import TypedDict
 from aiogram import Bot
 from aiogram.enums import ParseMode
-from config.constants import TOKEN
+from config.constants import BOT_TOKEN as TOKEN
 from services.utils import get_language_of_single_user
 
 

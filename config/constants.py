@@ -1,14 +1,16 @@
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
 
-TOKEN = os.getenv('BOT_TOKEN')
+# Telegram bot constants
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
-# webhook configuration
-WEB_SERVER_HOST = "127.0.0.1"
-WEB_SERVER_PORT = 8080
-WEBHOOK_PATH = "/webhook"
+# External API constants
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+# Webhook constants
+WEB_SERVER_HOST = os.getenv('WEB_SERVER_HOST')
+WEB_SERVER_PORT = os.getenv('WEB_SERVER_PORT')
+WEBHOOK_PATH = os.getenv('WEBHOOK_PATH')
 WEBHOOK_SECRET = os.getenv('WEBHOOK_SECRET')
 BASE_WEBHOOK_URL = os.getenv("BASE_WEBHOOK_URL")
-

@@ -1,13 +1,12 @@
 import os
-import unittest
+import pytest
 from unittest.mock import patch, MagicMock
 
 from database.base import Database
 from exceptions.database import RollbackError, CommitError
 
 
-class TestDatabase(unittest.TestCase):
-
+class TestDatabase:
     @patch('psycopg2.connect')
     def test_database_initialization(self, mock_connect):
         mock_connection = MagicMock()
@@ -15,7 +14,7 @@ class TestDatabase(unittest.TestCase):
 
         db = Database()
 
-        self.assertIsNotNone(db.conn)
+        assert db.conn is not None
         mock_connect.assert_called_once_with(
             database=os.getenv("DB_NAME"),
             user=os.getenv("DB_USER"),
@@ -42,11 +41,11 @@ class TestDatabase(unittest.TestCase):
         mock_connect.return_value = mock_connection
         db = Database()
 
-        with self.assertRaises(Exception) as context:
+        with pytest.raises(Exception, match="Test exception") as exc_info:
             with db:
                 raise Exception("Test exception")
 
-        self.assertEqual(str(context.exception), "Test exception")
+        assert str(exc_info.value) == "Test exception"
         mock_connection.rollback.assert_called_once()
         mock_connection.close.assert_called_once()
 
@@ -57,7 +56,7 @@ class TestDatabase(unittest.TestCase):
         mock_connect.return_value = mock_connection
         db = Database()
 
-        with self.assertRaises(RollbackError):
+        with pytest.raises(RollbackError):
             with db:
                 raise Exception("simulate exception")
 
@@ -70,13 +69,9 @@ class TestDatabase(unittest.TestCase):
         mock_connect.return_value = mock_connection
         db = Database()
 
-        with self.assertRaises(CommitError):
+        with pytest.raises(CommitError):
             with db:
                 pass
 
         mock_connection.rollback.assert_called()
         mock_connection.close.assert_called()
-
-
-if __name__ == '__main__':
-    unittest.main()
