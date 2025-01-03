@@ -6,8 +6,8 @@ from aiogram.enums import ParseMode
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 
-from bot.bot import user_router, admin_router
-from bot.middlewares.auth_middleware import auth_middleware
+from bot.bot import admin_router
+# from bot.middlewares.auth_middleware import auth_middleware
 from config.constants import (
     BASE_WEBHOOK_URL,
     WEBHOOK_PATH,
@@ -42,11 +42,11 @@ def main() -> None:
     """
     logger.info("Starting bot application...")
 
-    bot = Bot(token=BOT_TOKEN, parse_mode=ParseMode.MARKDOWN)
+    bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher()
-    dp.include_router(user_router)
+    # dp.include_router(user_router)
     dp.include_router(admin_router)
-    dp.update.outer_middleware(auth_middleware)
+    # dp.update.outer_middleware(auth_middleware)
 
     # Create Aiohttp web application
     app = web.Application()
@@ -70,13 +70,14 @@ def main() -> None:
 
         # Start the web server
         logger.info("Starting web server at %s:%s", WEB_SERVER_HOST, WEB_SERVER_PORT)
-        web.run_app(app, host=WEB_SERVER_HOST, port=WEB_SERVER_PORT)
+        web.run_app(app, host=WEB_SERVER_HOST, port=int(WEB_SERVER_PORT))
     except Exception as e:
         logger.error("An error occurred in the main function: %s", str(e), exc_info=True)
 
 if __name__ == "__main__":
     try:
         main()
+
     except Exception as e:
         logger.critical("Unhandled exception: %s", str(e), exc_info=True)
         sys.exit(1)

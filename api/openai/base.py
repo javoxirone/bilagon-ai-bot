@@ -11,16 +11,11 @@ class OpenAIAPIBase:
         self.client: OpenAI = OpenAI(api_key=self.api_key, base_url=self.base_url)
 
     def request(self, endpoint: str, **kwargs):
-        try:
-            if endpoint == "chat":
-                return self.client.chat.completions.create(**kwargs)
-            elif endpoint == "audio":
-                return self.client.audio.transcriptions.create(**kwargs)
-            elif endpoint == "image":
-                pass
-            else:
-                raise ValueError("Invalid endpoint.")
-        except Exception as e:
-            raise APIServerError("Error occurred while making request to OpenAI API.") from e
-
-
+        if endpoint == "text":
+            return self.client.chat.completions.create(**kwargs)
+        elif endpoint == "audio":
+            return self.client.audio.transcriptions.create(**kwargs)
+        elif endpoint == "image":
+            pass
+        else:
+            raise ValueError("Invalid endpoint.")
