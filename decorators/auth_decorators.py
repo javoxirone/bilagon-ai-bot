@@ -1,4 +1,4 @@
-from database.user import User
+from database.repositories.user import User
 from keyboards.inline_keyboards import get_lang_keyboard
 from aiogram.types import Message
 from typing import Callable, Awaitable

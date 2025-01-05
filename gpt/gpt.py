@@ -1,6 +1,6 @@
 import os
 from pprint import pprint
-from database.conversation import Conversation
+from database.repositories.conversation import Conversation
 from openai import OpenAI
 from dotenv import load_dotenv
 

@@ -7,7 +7,7 @@ from templates.message_templates import (
 from keyboards.inline_keyboards import get_new_chat_keyboard
 from config.integrations import gpt
 from aiogram.exceptions import TelegramBadRequest
-from services.conversation_services import (
+from services.conversation import (
     add_message_of_user_to_conversation,
     add_message_of_assistant_to_conversation,
     get_conversations_of_single_user,
@@ -15,7 +15,7 @@ from services.conversation_services import (
 from typing import TypedDict
 from aiogram import Bot
 from aiogram.enums import ParseMode
-from config.constants import TOKEN
+from config.constants import BOT_TOKEN as TOKEN
 from services.utils import get_language_of_single_user
 
 
