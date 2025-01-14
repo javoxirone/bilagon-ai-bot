@@ -1,8 +1,14 @@
 from aiogram import Bot
-from aiogram.enums import ParseMode
+from sqlalchemy import create_engine
 
 from api.openai.processors.text import TextProcessor
-from config.constants import OPENAI_API_KEY, OPENAI_BASE_URL, BOT_TOKEN
+from config.constants import OPENAI_API_KEY, OPENAI_BASE_URL, BOT_TOKEN, DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
+from sqlalchemy.orm import sessionmaker
 
 bot = Bot(token=BOT_TOKEN)
 text_processor = TextProcessor(api_key=OPENAI_API_KEY, base_url=OPENAI_BASE_URL)
+
+db_engine = create_engine(f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}')
+
+DBSession = sessionmaker(bind=db_engine)
+db_session = DBSession()
