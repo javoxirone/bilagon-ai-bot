@@ -1,4 +1,3 @@
-from typing import NoReturn
 from data_types.db import UserDataType
 from database.base import Database
 from psycopg2.extensions import cursor as CursorType
@@ -116,7 +115,7 @@ class User(Database):
             raise DataTypeError(
                 f"Data type error occurred because of wrong data type used while fetching a user id, telegram_id is {telegram_id}")
 
-    def add_user(self, telegram_id: int, username: str, first_name: str, last_name: str, language: str) -> NoReturn:
+    def add_user(self, telegram_id: int, username: str, first_name: str, last_name: str, language: str) -> None:
 
         try:
             with self as db_session:
@@ -160,7 +159,7 @@ class User(Database):
         except DataError:
             raise DataTypeError()
 
-    def update_user_language(self, telegram_id: int, new_language: str) -> NoReturn:
+    def update_user_language(self, telegram_id: int, new_language: str) -> None:
 
         if not self.user_exists(telegram_id):
             raise UserDoesNotExist(f"Provided telegram_id is {telegram_id}")

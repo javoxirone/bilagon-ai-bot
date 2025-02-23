@@ -51,7 +51,7 @@ async def handle_gpt_response(telegram_id: int, message: list) -> None:
             if chunk.choices[0].delta.content is not None:
                 chunks.append(chunk.choices[0].delta.content)
                 counter += 1
-                if counter >= 30:
+                if counter >= 60:
                     await bot.edit_message_text(
                         "".join(chunks) + " ▌",
                         telegram_id,
@@ -62,6 +62,7 @@ async def handle_gpt_response(telegram_id: int, message: list) -> None:
                     counter = 0
 
         text = "".join(chunks)
+
         await bot.edit_message_text(
             text,
             telegram_id,

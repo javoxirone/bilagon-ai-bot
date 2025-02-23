@@ -1,8 +1,5 @@
 from openai import OpenAI
 
-from exceptions.api import APIServerError
-from services.database.conversation import insert_conversation
-
 
 class OpenAIAPIBase:
     def __init__(self, api_key: str, base_url: str):

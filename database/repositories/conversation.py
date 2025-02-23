@@ -1,4 +1,3 @@
-from typing import NoReturn
 from psycopg2 import DataError, OperationalError
 from psycopg2.extensions import cursor as CursorType
 from data_types.db import ConversationDataType
@@ -16,7 +15,7 @@ class Conversation(Database):
             role: str = conversation_data_raw[0]
             content: str = conversation_data_raw[1]
             return {
-                "role": role,
+                "role": role.strip(),
                 "content": content
             }
         except IndexError as e:
@@ -31,7 +30,7 @@ class Conversation(Database):
         except UserDoesNotExist:
             raise RelatedRecordDoesNotExist(f"User with telegram_id {telegram_id} does not exist in the database.")
 
-    def add_conversation(self, telegram_id: int, role: str, message: str) -> NoReturn:
+    def add_conversation(self, telegram_id: int, role: str, message: str) -> None:
         try:
             user_id: int = self._get_user_id(telegram_id)
         except RelatedRecordDoesNotExist:
@@ -51,7 +50,7 @@ class Conversation(Database):
             raise DBError(
                 f"Internal database error occurred while adding a new conversation for a user with telegram_id {telegram_id}")
 
-    def delete_all_conversations(self, telegram_id: int) -> NoReturn:
+    def delete_all_conversations(self, telegram_id: int) -> None:
         try:
             user_id: int = self._get_user_id(telegram_id)
         except RelatedRecordDoesNotExist:

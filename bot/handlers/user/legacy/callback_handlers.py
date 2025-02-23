@@ -1,34 +1,47 @@
+
+from database.repositories.user import User
 from aiogram.types import CallbackQuery
+from templates.message_templates import (get_new_chat_message, )
+from config.integrations import gpt
+from aiogram import Bot
+from config.constants import BOT_TOKEN as TOKEN
+from aiogram.enums import ParseMode
 
-from config.integrations import bot
-from services.database.conversation import delete_all_user_conversations
-from services.database.user import update_user_language, get_user_by_telegram_id
-from templates.message_templates import get_new_chat_message
-
+bot = Bot(token=TOKEN, parse_mode=ParseMode.MARKDOWN)
 
 async def process_callback_uz_lang(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
-    update_user_language(telegram_id, "uz")
+    db = User()
+    db.change_language(telegram_id, callback_query.data)
+    db.close()
+
     await bot.delete_message(telegram_id, callback_query.message.message_id)
     await bot.send_message(telegram_id, "O'zbek tili tanlandi, savolingizga javob berishga tayyorman 😊")
 
 
 async def process_callback_ru_lang(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
-    update_user_language(telegram_id, "ru")
+    db = User()
+    db.change_language(telegram_id, callback_query.data)
+    db.close()
+
     await bot.delete_message(telegram_id, callback_query.message.message_id)
     await bot.send_message(telegram_id, "Выбран русский язык, я готов ответить на ваши вопросы 😊")
 
 
 async def process_callback_en_lang(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
-    update_user_language(telegram_id, "en")
+    db = User()
+    db.change_language(telegram_id, callback_query.data)
+    db.close()
+
     await bot.delete_message(telegram_id, callback_query.message.message_id)
     await bot.send_message(telegram_id, "English language selected, I am ready to answer your questions 😊")
 
-
 async def process_callback_new_chat(callback_query: CallbackQuery):
     telegram_id = callback_query.from_user.id
-    user = get_user_by_telegram_id(telegram_id)
-    delete_all_user_conversations(telegram_id)
+    db = User()
+    user = db.get_user_by_telegram_id(telegram_id)
+    db.close()
+    gpt.reset_chat(telegram_id)
     await bot.send_message(telegram_id, get_new_chat_message(user["language"]))

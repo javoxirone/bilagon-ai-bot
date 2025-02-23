@@ -6,7 +6,14 @@ class TextProcessor(OpenAIAPIBase):
     def __init__(self, api_key: str, base_url: str):
         super().__init__(api_key, base_url)
 
-    def generate_text_response(self, messages: any, model: str = "gpt-4o-mini", temperature: float = 0.7, max_tokens: int = 500, stream: bool = False, stop: None | bool = None, **kwargs):
+    def generate_text_response(self,
+                               messages: any,
+                               model: str = "gpt-4o-mini",
+                               temperature: float = 0.7,
+                               max_tokens: int = 16_384,
+                               stream: bool = False,
+                               stop: None | bool = None,
+                               **kwargs):
         try:
             return self.request(
                 endpoint="text",

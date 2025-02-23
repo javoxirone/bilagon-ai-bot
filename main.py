@@ -6,7 +6,7 @@ from aiogram.enums import ParseMode
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 
-from bot.bot import admin_router
+from bot.bot import admin_router, user_router
 # from bot.middlewares.auth_middleware import auth_middleware
 from config.constants import (
     BASE_WEBHOOK_URL,
@@ -44,7 +44,7 @@ def main() -> None:
 
     bot = Bot(token=BOT_TOKEN)
     dp = Dispatcher()
-    # dp.include_router(user_router)
+    dp.include_router(user_router)
     dp.include_router(admin_router)
     # dp.update.outer_middleware(auth_middleware)
 

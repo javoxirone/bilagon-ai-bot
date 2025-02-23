@@ -1,64 +1,21 @@
-from typing import NoReturn
 from aiogram import Router, F
-from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import Message
-from config.integrations import bot
-from config.constants import DIVIDE_MESSAGE_AFTER, MESSAGE_COMPLETION_CURSOR
-from services.api.openai import get_text_response_in_incognito_mode
+from aiogram.filters import Command
+
+from bot.handlers.user.callback_handlers import process_callback_new_chat, process_callback_uz_lang, \
+    process_callback_ru_lang, process_callback_en_lang
+from bot.handlers.user.command_handlers import command_language_handler
+from bot.handlers.user.text_handlers import handle_message_with_context
 
 admin_router = Router()
+user_router = Router()
 
+user_router.message.register(command_language_handler, Command("language"))
 
-async def handle_incognito_message(message: Message) -> NoReturn:
-    response_generator = get_text_response_in_incognito_mode(message.text)
-    original_message = await message.reply("Loading...")
-    original_message_id = original_message.message_id
-    dummy_response_text = ""
-    generator_counter = 0
+user_router.callback_query.register(process_callback_uz_lang, lambda c: c.data == "uz")
+user_router.callback_query.register(process_callback_ru_lang, lambda c: c.data == "ru")
+user_router.callback_query.register(process_callback_en_lang, lambda c: c.data == "en")
+user_router.callback_query.register(process_callback_new_chat, lambda c: c.data == "new_chat")
 
-    while True:
-        generator_counter += 1
-        try:
-            dummy_response_text += next(response_generator)
-            if len(dummy_response_text) >= DIVIDE_MESSAGE_AFTER:
-                await bot.edit_message_text(chat_id=message.chat.id, message_id=original_message_id,
-                                            text=dummy_response_text[:DIVIDE_MESSAGE_AFTER])
-                dummy_response_text = dummy_response_text[DIVIDE_MESSAGE_AFTER:]
+user_router.message.register(handle_message_with_context, F.text)
+user_router.callback_query.register(process_callback_new_chat, F.callbackQuery)
 
-                original_message = await message.answer(MESSAGE_COMPLETION_CURSOR)
-                original_message_id = original_message.message_id
-
-            if generator_counter >= 30:
-                await bot.edit_message_text(chat_id=message.chat.id, message_id=original_message_id,
-                                            text=dummy_response_text + MESSAGE_COMPLETION_CURSOR)
-                generator_counter = 0
-
-        except TelegramBadRequest:
-            dummy_response_text += next(response_generator)
-            if len(dummy_response_text) >= DIVIDE_MESSAGE_AFTER:
-                await bot.edit_message_text(chat_id=message.chat.id, message_id=original_message_id,
-                                            text=dummy_response_text[:DIVIDE_MESSAGE_AFTER])
-                dummy_response_text = dummy_response_text[DIVIDE_MESSAGE_AFTER:]
-                original_message = await message.answer(MESSAGE_COMPLETION_CURSOR)
-                original_message_id = original_message.message_id
-
-            if generator_counter >= 30:
-                await bot.edit_message_text(chat_id=message.chat.id, message_id=original_message_id,
-                                            text=dummy_response_text + MESSAGE_COMPLETION_CURSOR)
-                generator_counter = 0
-
-        except StopIteration:
-            break
-
-    while dummy_response_text:
-        await bot.edit_message_text(chat_id=message.chat.id, message_id=original_message_id,
-                                    text=dummy_response_text[:DIVIDE_MESSAGE_AFTER], parse_mode="Markdown")
-        dummy_response_text = dummy_response_text[DIVIDE_MESSAGE_AFTER:]
-        if dummy_response_text:
-            original_message = await message.answer(MESSAGE_COMPLETION_CURSOR)
-            original_message_id = original_message.message_id
-
-async def message_handler(message: Message) -> NoReturn:
-
-
-admin_router.message.register(message_handler, F.text)

@@ -1,5 +1,3 @@
-from typing import NoReturn
-
 import pytest
 from unittest.mock import patch, Mock
 from database.repositories.conversation import Conversation
@@ -8,7 +6,7 @@ from tests.database.repositories.base import TestRepositoryBase
 
 
 class TestConversation(TestRepositoryBase):
-    def setup_method(self) -> NoReturn:
+    def setup_method(self) -> None:
         self.db: None | Conversation = None
         self.user_id: int = 1
         self.telegram_id: int = 957481488
@@ -29,15 +27,15 @@ class TestConversation(TestRepositoryBase):
             self.db = Conversation()
             self.db.conn = mock_connection
 
-    def test_private_serialize_successful(self) -> NoReturn:
+    def test_private_serialize_successful(self) -> None:
         method_result: dict[str, str] = self.db._serialize(self.raw_conversation)
         assert method_result == self.serialized_conversation
 
-    def test_private_serialize_raises_value_error(self) -> NoReturn:
+    def test_private_serialize_raises_value_error(self) -> None:
         with pytest.raises(ValueError):
             self.db._serialize((None,))  # type: ignore
 
-    def test_private_get_user_id_successful(self) -> NoReturn:
+    def test_private_get_user_id_successful(self) -> None:
         with patch('psycopg2.connect') as mock_connect:
             mock_cursor: Mock = Mock()
             mock_cursor.fetchone.return_value = (self.user_id,)
@@ -50,7 +48,7 @@ class TestConversation(TestRepositoryBase):
             method_result: int = self.db._get_user_id(self.telegram_id)
             assert method_result == self.user_id
 
-    def test_private_get_user_id_raises_related_record_does_not_exist(self) -> NoReturn:
+    def test_private_get_user_id_raises_related_record_does_not_exist(self) -> None:
         with patch('psycopg2.connect') as mock_connect:
             mock_cursor: Mock = Mock()
             mock_cursor.fetchone.return_value = None
@@ -63,7 +61,7 @@ class TestConversation(TestRepositoryBase):
                 with pytest.raises(RelatedRecordDoesNotExist):
                     self.db._get_user_id(self.telegram_id)
 
-    def test_add_conversation_successful(self) -> NoReturn:
+    def test_add_conversation_successful(self) -> None:
         with patch('psycopg2.connect') as mock_connect:
             mock_cursor: Mock = Mock()
             mock_cursor.fetchone.return_value = (self.user_id,)
@@ -76,7 +74,7 @@ class TestConversation(TestRepositoryBase):
             self.db.conn.close.assert_called_once()
             assert self.db.conn.commit.call_count == 2
 
-    def test_delete_all_conversations_successful(self) -> NoReturn:
+    def test_delete_all_conversations_successful(self) -> None:
         with patch('psycopg2.connect') as mock_connect:
             mock_cursor: Mock = Mock()
             mock_cursor.fetchone.return_value = (self.user_id,)
@@ -89,7 +87,7 @@ class TestConversation(TestRepositoryBase):
             self.db.conn.close.assert_called_once()
             assert self.db.conn.commit.call_count == 2
 
-    def test_get_raw_conversation_list_successful(self) -> NoReturn:
+    def test_get_raw_conversation_list_successful(self) -> None:
         with patch('psycopg2.connect') as mock_connect:
             mock_cursor: Mock = Mock()
             mock_cursor.fetchone.return_value = (self.user_id,)
@@ -103,7 +101,7 @@ class TestConversation(TestRepositoryBase):
             self.db.conn.cursor().fetchall.assert_called_once()  # type: ignore
             self.db.conn.close.assert_called_once()  # type: ignore
 
-    def test_get_get_serialized_conversation_list_successful(self) -> NoReturn:
+    def test_get_get_serialized_conversation_list_successful(self) -> None:
         self.db.get_raw_conversation_list = Mock()
         self.db.get_raw_conversation_list.call_args = (self.telegram_id,)  # type: ignore
         self.db.get_raw_conversation_list.return_value = self.raw_conversation_list

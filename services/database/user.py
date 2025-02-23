@@ -3,6 +3,29 @@ from database.repositories.user import User
 from exceptions.database import UserDoesNotExist, RelatedRecordDoesNotExist, DBError, DataTypeError
 
 
+def get_user_language(telegram_id: int) -> str:
+    """
+    This service gets serialized user data and returns language field.
+
+    :param telegram_id: Unique telegram identification of the user
+    :type telegram_id: int
+
+    :return: User's language preference
+    :rtype: str
+    """
+
+    try:
+        user_db: User = User()
+        language: str = user_db.get_serialized_user(telegram_id)["language"]
+        return language
+    except UserDoesNotExist:
+        raise
+    except DBError:
+        raise
+    except DataTypeError:
+        raise
+
+
 def get_user_by_telegram_id(telegram_id: int) -> UserDataType:
     """
     Retrieves a user's data using their Telegram ID. The function queries
@@ -20,7 +43,7 @@ def get_user_by_telegram_id(telegram_id: int) -> UserDataType:
     """
     try:
         user_db: User = User()
-        user_data: UserDataType = user_db.get_user(telegram_id)
+        user_data: UserDataType = user_db.get_serialized_user(telegram_id)
         return user_data
     except UserDoesNotExist:
         raise
@@ -48,6 +71,18 @@ def get_user_id_by_telegram_id(telegram_id: int) -> int:
         user_db: User = User()
         user_id: int = user_db.get_user_id(telegram_id)
         return user_id
+    except UserDoesNotExist:
+        raise
+    except DBError:
+        raise
+    except DataTypeError:
+        raise
+
+
+def update_user_language(telegram_id: int, language: str) -> None:
+    try:
+        user_db: User = User()
+        user_db.update_user_language(telegram_id, language)
     except UserDoesNotExist:
         raise
     except DBError:
