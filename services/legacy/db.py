@@ -51,7 +51,7 @@ def add_new_user(data: UserType) -> None:
     username: str = data.username
     first_name: str = data.first_name
     last_name: str = data.last_name
-    lang: str = 'uz'
+    lang: str = "en"
     try:
         db: User = User()
         db.add_user(telegram_id, username, first_name, last_name, lang)

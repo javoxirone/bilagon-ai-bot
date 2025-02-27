@@ -7,6 +7,7 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_applicati
 from aiohttp import web
 
 from bot.bot import admin_router, user_router
+from bot.middlewares.auth_middleware import auth_middleware
 # from bot.middlewares.auth_middleware import auth_middleware
 from config.constants import (
     BASE_WEBHOOK_URL,
@@ -23,6 +24,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 async def on_startup(bot: Bot) -> None:
     """
     Perform startup actions like setting the webhook.
@@ -36,6 +38,7 @@ async def on_startup(bot: Bot) -> None:
         logger.error("Error during webhook setup: %s", str(e), exc_info=True)
         raise
 
+
 def main() -> None:
     """
     Main entry point for the application.
@@ -46,7 +49,7 @@ def main() -> None:
     dp = Dispatcher()
     dp.include_router(user_router)
     dp.include_router(admin_router)
-    # dp.update.outer_middleware(auth_middleware)
+    dp.update.outer_middleware(auth_middleware)
 
     # Create Aiohttp web application
     app = web.Application()
@@ -73,6 +76,7 @@ def main() -> None:
         web.run_app(app, host=WEB_SERVER_HOST, port=int(WEB_SERVER_PORT))
     except Exception as e:
         logger.error("An error occurred in the main function: %s", str(e), exc_info=True)
+
 
 if __name__ == "__main__":
     try:

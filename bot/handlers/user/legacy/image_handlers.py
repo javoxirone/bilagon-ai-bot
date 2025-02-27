@@ -4,7 +4,7 @@ from PIL import Image
 from aiogram.types import Message
 from aiogram import Bot
 from bot.handlers.user.legacy.message_handlers import handle_gpt_response
-from services.utils import get_language_of_single_user
+from services.legacy.utils import get_language_of_single_user
 from tasks import delete_handled_file
 
 

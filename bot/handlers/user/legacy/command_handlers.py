@@ -1,7 +1,7 @@
 from aiogram.enums import ParseMode
 
 from aiogram.types import Message
-from services.utils import (
+from services.legacy.utils import (
     get_single_user,
     get_language_of_single_user,
 )
@@ -15,7 +15,6 @@ from templates.message_templates import (
     get_premium_requests_num_message,
     get_donate_command_message, get_chat_mode_message,
 )
-from decorators.auth_decorators import initialize_user
 
 
 async def command_start_handler(message: Message) -> None:

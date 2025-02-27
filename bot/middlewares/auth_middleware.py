@@ -1,9 +1,9 @@
 from typing import Callable, Dict, Any, Awaitable
 from aiogram import Bot
-from aiogram.types import Update, User as UserType
+from aiogram.types import Update, User as UserType, CallbackQuery
 from keyboards.inline_keyboards import get_lang_keyboard
-from services.db import (check_if_user_exists, add_new_user, )
-
+from services.database.user import get_user_language, user_exists, update_user_language
+from services.database.user import add_new_user
 
 async def auth_middleware(
         handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],
@@ -13,7 +13,12 @@ async def auth_middleware(
     user: UserType = data["event_from_user"]
     bot: Bot = data["bot"]
     try:
-        if not check_if_user_exists(user.id):
+        if not user_exists(user.id):
+            if isinstance(event.event, CallbackQuery) and event.event.data.startswith('lang_'):
+                user_language = event.event.data.split('_')[1]
+                add_new_user(user)
+                update_user_language(user.id, user_language)
+                return await handler(event, data)
             await bot.send_message(user.id,
                                    "🇺🇿\nAssalomu alaykum, men Bilag'onman. Har qanday savolingizga javob berishga harakat qilaman 🤓\n\n"
                                    "🇷🇺\nЗдравствуйте, я Bilag'on. Я постораюсь ответить на все ваши вопросы 🤓\n\n"
@@ -25,7 +30,8 @@ async def auth_middleware(
                                    "🇺🇸 To ask a question, choose the language first:",
                                    reply_markup=get_lang_keyboard()
                                    )
-            add_new_user(user)
+            return
+        return await handler(event, data)
     except Exception as e:
-        print(e)
-    return await handler(event, data)
+        print(f"Error in auth middleware: {e}")
+        return

@@ -2,8 +2,10 @@ from config.integrations import text_processor
 
 
 def _get_text_response(context: list):
-    stream = text_processor.generate_text_response(messages=[{"role": "developer", "content": "You are a helpful assistant named \"Bilag'on\"."}]+context, stream=True,
-                                                   max_tokens=2000)
+    stream = text_processor.generate_text_response(
+        messages=[{"role": "developer", "content": "You are a helpful assistant named \"Bilag'on\"."}] + context,
+        stream=True,
+        max_tokens=2000)
     return stream
 
 

@@ -10,7 +10,7 @@ class TextProcessor(OpenAIAPIBase):
                                messages: any,
                                model: str = "gpt-4o-mini",
                                temperature: float = 0.7,
-                               max_tokens: int = 16_384,
+                               max_tokens: int = 500,
                                stream: bool = False,
                                stop: None | bool = None,
                                **kwargs):

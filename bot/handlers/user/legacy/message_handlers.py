@@ -1,6 +1,5 @@
 from aiogram.types import Message
-from decorators.auth_decorators import initialize_user
-from services.gpt import handle_gpt_response
+from services.legacy.gpt import handle_gpt_response
 
 
 async def message_handler(message: Message) -> None:

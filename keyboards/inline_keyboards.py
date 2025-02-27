@@ -5,17 +5,17 @@ def get_lang_keyboard():
     buttons = [
         [
             types.InlineKeyboardButton(
-                text="🇺🇿 O'zbekcha", callback_data='uz'
+                text="🇺🇿 O'zbekcha", callback_data='lang_uz'
             )
         ],
         [
             types.InlineKeyboardButton(
-                text="🇷🇺 Русский", callback_data='ru'
+                text="🇷🇺 Русский", callback_data='lang_ru'
             )
         ],
         [
             types.InlineKeyboardButton(
-                text="🇺🇸 English", callback_data='en'
+                text="🇺🇸 English", callback_data='lang_en'
             )
         ],
     ]

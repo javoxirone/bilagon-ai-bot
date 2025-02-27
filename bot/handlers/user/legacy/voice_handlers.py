@@ -5,7 +5,7 @@ from aiogram import Bot
 from pathlib import Path
 
 from gpt.gpt import OpenAIAPI
-from services.gpt import handle_gpt_response
+from services.legacy.gpt import handle_gpt_response
 from tasks import delete_handled_file
 from dotenv import load_dotenv
 
