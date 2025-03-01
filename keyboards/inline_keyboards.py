@@ -26,13 +26,13 @@ def get_lang_keyboard():
 def get_new_chat_keyboard(lang):
     buttons = {
         "uz": types.InlineKeyboardButton(
-            text="Yangi suhbat 🔄", callback_data='new_chat'
+            text="💬 Yangi suhbat 💬", callback_data='new_chat'
         ),
         "ru": types.InlineKeyboardButton(
-            text="Новый разговор 🔄", callback_data='new_chat'
+            text="💬 Новый разговор 💬", callback_data='new_chat'
         ),
         "en": types.InlineKeyboardButton(
-            text="New Chat 🔄", callback_data='new_chat'
+            text="💬 New Chat 💬", callback_data='new_chat'
         ),
     }
     button = [[buttons[lang]]]

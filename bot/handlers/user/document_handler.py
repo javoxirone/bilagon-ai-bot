@@ -15,6 +15,7 @@ from tasks import delete_handled_file
     "start": "Processing your document...",
     "download": "Downloading the document...",
     "parse": "Parsing the content...",
+    "final_request": "Preparing the final request...",
     "generate": "Generating the response..."
 })
 async def handle_document(message: Message, status_context: dict) -> None:
@@ -35,6 +36,7 @@ async def handle_document(message: Message, status_context: dict) -> None:
         await status_context["update_status"]("parse")
         extracted_document_content = document_parser.parse_document(full_path)
 
+        await status_context["update_status"]("final_request")
         # Build the message with extracted content
         final_request_message = f"\"{extracted_document_content}\"\n\nThis is a content that was extracted from the document.\n\n{caption}"
 

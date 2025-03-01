@@ -27,9 +27,9 @@ def get_loading_message(lang: str) -> str:
 
 def get_new_chat_message(lang: str) -> str:
     message = {
-        "uz": "Botning xotirasidan oxirgi so'rovlaringiz o'chirildi. Endi, boshqa mavzuda savol suhbat boshlashingiz mumkin 😊",
-        "ru": "Бот стер память о вашем предыдущем запросе и его ответе. Теперь вы можете выбрать другую тему и начать новый чат 😊",
-        "en": "The bot has erased its memory of your previous request and its answer. You can now pick a different topic and start a new chat 😊",
+        "uz": "Botning xotirasidan oxirgi so'rovlaringiz o'chirildi. Endi, boshqa mavzuda savol suhbat boshlashingiz mumkin!",
+        "ru": "Бот стер память о вашем предыдущем запросе и его ответе. Теперь вы можете выбрать другую тему и начать новый чат!",
+        "en": "The bot has erased its memory of your previous request and its answer. You can now pick a different topic and start a new chat!",
     }
     return message[lang]
 
@@ -245,3 +245,106 @@ def get_chat_mode_message(lang):
     }
     return message[lang]
 
+
+def get_processing_voice_message(lang):
+    message = {
+        'uz': 'Ovozli xabaringiz qayta ishlanmoqda...',
+        'ru': 'Обработка вашего голосового сообщения...',
+        'en': 'Processing your voice message...',
+    }
+    return message[lang]
+
+
+def get_downloading_voice_message(lang):
+    message = {
+        'uz': 'Ovozli xabar yuklab olinmoqda...',
+        'ru': 'Загрузка голосового сообщения...',
+        'en': 'Downloading the voice message...',
+    }
+    return message[lang]
+
+
+def get_transcribing_voice_message(lang):
+    message = {
+        'uz': 'Ovozli xabaringiz transkripsiya qilinmoqda...',
+        'ru': 'Транскрибация вашего голосового сообщения...',
+        'en': 'Transcribing your voice message...',
+    }
+    return message[lang]
+
+
+def get_generating_response_message(lang):
+    message = {
+        'uz': 'Javob yaratilmoqda...',
+        'ru': 'Формирование ответа...',
+        'en': 'Generating the response...',
+    }
+    return message[lang]
+
+
+def get_processing_photo_message(lang):
+    message = {
+        'uz': 'Surat qayta ishlanmoqda...',
+        'ru': 'Обработка фото...',
+        'en': 'Processing your photo...',
+    }
+    return message[lang]
+
+
+def get_downloading_photo_message(lang):
+    message = {
+        'uz': 'Surat yuklab olinmoqda...',
+        'ru': 'Загружаю фото...',
+        'en': 'Downloading the photo...',
+    }
+    return message[lang]
+
+
+def get_extracting_text_from_photo_message(lang):
+    message = {
+        'uz': 'Suratdan matn olinmoqda...',
+        'ru': 'Извлечение текста из фотографии...',
+        'en': 'Extracting the text from the photo...',
+    }
+    return message[lang]
+
+
+def get_final_request_message(lang):
+    message = {
+        'uz': 'Yakuniy so‘rov tayyorlanmoqda...',
+        'ru': 'Подготовка окончательного запроса...',
+        'en': 'Preparing the final request...',
+    }
+    return message[lang]
+
+def get_processing_document_message(lang):
+    message = {
+        'uz': 'Hujjatingiz qayta ishlanmoqda...',
+        'ru': 'Обработка вашего документа...',
+        'en': 'Processing your document...',
+    }
+    return message[lang]
+
+def get_downloading_document_message(lang):
+    message = {
+        'uz': 'Hujjat yuklab olinmoqda...',
+        'ru': 'Загрузка документа...',
+        'en': 'Downloading the document...',
+    }
+    return message[lang]
+
+def get_parsing_content_message(lang):
+    message = {
+        'uz': 'Kontent tahlil qilinmoqda...',
+        'ru': 'Анализ содержимого...',
+        'en': 'Parsing the content...',
+    }
+    return message[lang]
+
+def get_processing_text_message(lang):
+    message = {
+        'uz': 'Matnli xabaringiz qayta ishlanmoqda...',
+        'ru': 'Обработка вашего текстового сообщения...',
+        'en': 'Processing your text message...',
+    }
+    return message[lang]
