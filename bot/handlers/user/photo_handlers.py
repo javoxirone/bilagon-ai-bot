@@ -4,10 +4,11 @@ import pytesseract
 from aiogram import Bot
 from aiogram.types import Message
 from PIL import Image
-from services.api.openai import get_text_response_with_context
-from services.database.conversation import save_conversation, get_conversation_list
-from services.database.user import get_user_language
-from utils.handler.response_generation_utils import process_streaming_response
+from services.api.openai_api_services import get_text_response_with_context
+from services.database.conversation_database_services import save_conversation, get_conversation_list
+from services.database.user_database_services import get_user_language
+from services.handler.photo_handler_services import handle_message_photo
+from services.handler.text_handler_services import process_streaming_response
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -46,7 +47,6 @@ async def handle_photo(message: Message, bot: Bot) -> None:
 
         # Try primary OCR method
         try:
-            from utils.handler.image_to_text_utils import handle_message_photo
             extracted_text = handle_message_photo(path, user_language)
         except Exception as e:
             logger.error(f"Primary OCR failed: {str(e)}")
@@ -66,7 +66,7 @@ async def handle_photo(message: Message, bot: Bot) -> None:
         )
 
         # Final text processing
-        final_text = extracted_text.strip() if extracted_text.strip() else "No readable text could be extracted from the image."
+        final_text = extracted_text.strip() if extracted_text.strip() else ""
         final_request_message = f'"{final_text}"\n\nThis is text extracted from an image.'
 
         if message_caption:

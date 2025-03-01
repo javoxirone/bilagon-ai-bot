@@ -1,4 +1,4 @@
-from data_types.db import UserDataType
+from data_types.database import UserDataType
 from database.base import Database
 from psycopg2 import (
     IntegrityError,

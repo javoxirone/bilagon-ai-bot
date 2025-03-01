@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, Mock
-from services.database.user import get_user_id_by_telegram_id
+from services.database.user_database_services import get_user_id_by_telegram_id
 
 
 @patch('psycopg2.connect')

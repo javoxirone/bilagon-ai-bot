@@ -1,6 +1,6 @@
 from psycopg2 import IntegrityError
 
-from data_types.db import UserDataType
+from data_types.database import UserDataType
 from database.repositories.user import User
 from exceptions.database import UserDoesNotExist, RelatedRecordDoesNotExist, DBError, DataTypeError
 from aiogram.types import User as UserType

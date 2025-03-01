@@ -6,6 +6,7 @@ from bot.handlers.user.callback_handlers import process_callback_new_chat, proce
 from bot.handlers.user.command_handlers import command_language_handler
 from bot.handlers.user.photo_handlers import handle_photo
 from bot.handlers.user.text_handlers import handle_message_with_context
+from bot.handlers.user.voice_handlers import voice_message_handler
 
 admin_router = Router()
 user_router = Router()
@@ -19,5 +20,6 @@ user_router.callback_query.register(process_callback_new_chat, lambda c: c.data 
 
 user_router.message.register(handle_message_with_context, F.text)
 user_router.message.register(handle_photo, F.photo)
+user_router.message.register(voice_message_handler, F.voice)
 user_router.callback_query.register(process_callback_new_chat, F.callbackQuery)
 

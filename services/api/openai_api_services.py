@@ -1,4 +1,7 @@
-from config.integrations import text_processor
+import io
+from typing import BinaryIO
+
+from config.integrations import text_processor, audio_processor
 
 
 def _get_text_response(context: list):
@@ -21,3 +24,9 @@ def get_text_response_with_context(conversation_list: list):
     for chunk in stream:
         if chunk.choices[0].delta.content is not None and chunk.choices[0].delta.content != "":
             yield chunk.choices[0].delta.content
+
+
+def get_transcription_of_audio(audio_file: BinaryIO) -> str:
+    transcription = audio_processor.transcribe_audio(audio_file)
+    return transcription.text
+

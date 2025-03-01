@@ -1,5 +1,5 @@
 from psycopg2 import DataError, OperationalError
-from data_types.db import ConversationDataType
+from data_types.database import ConversationDataType
 from database.base import Database
 from exceptions.database import (
     UserDoesNotExist,
@@ -7,7 +7,7 @@ from exceptions.database import (
     DBError,
     DataTypeError,
 )
-from services.database.user import get_user_id_by_telegram_id
+from services.database.user_database_services import get_user_id_by_telegram_id
 
 
 class Conversation(Database):

@@ -2,8 +2,8 @@ from typing import Callable, Dict, Any, Awaitable
 from aiogram import Bot
 from aiogram.types import Update, User as UserType, CallbackQuery
 from keyboards.inline_keyboards import get_lang_keyboard
-from services.database.user import get_user_language, user_exists, update_user_language
-from services.database.user import add_new_user
+from services.database.user_database_services import get_user_language, user_exists, update_user_language
+from services.database.user_database_services import add_new_user
 
 async def auth_middleware(
         handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],

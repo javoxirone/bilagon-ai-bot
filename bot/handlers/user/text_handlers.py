@@ -1,10 +1,10 @@
 
 from aiogram.types import Message
 
-from services.api.openai import get_text_response_with_context
-from services.database.conversation import save_conversation, get_conversation_list
-from services.database.user import get_user_language
-from utils.handler.response_generation_utils import process_streaming_response
+from services.api.openai_api_services import get_text_response_with_context
+from services.database.conversation_database_services import save_conversation, get_conversation_list
+from services.database.user_database_services import get_user_language
+from services.handler.text_handler_services import process_streaming_response
 
 
 async def handle_message_with_context(message: Message) -> None:

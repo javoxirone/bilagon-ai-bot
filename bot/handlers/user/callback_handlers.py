@@ -1,8 +1,8 @@
 from aiogram.types import CallbackQuery
 
 from config.integrations import bot
-from services.database.conversation import delete_all_user_conversations
-from services.database.user import update_user_language, get_user_by_telegram_id
+from services.database.conversation_database_services import delete_all_user_conversations
+from services.database.user_database_services import update_user_language, get_user_by_telegram_id
 from templates.message_templates import get_new_chat_message
 
 

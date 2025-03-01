@@ -1,7 +1,7 @@
 from aiogram.types import Message
 
 from keyboards.inline_keyboards import get_lang_keyboard
-from services.database.user import get_user_by_telegram_id
+from services.database.user_database_services import get_user_by_telegram_id
 from templates.message_templates import get_language_command_message
 
 
