@@ -4,6 +4,8 @@ import pytesseract
 from aiogram import Bot
 from aiogram.types import Message
 from PIL import Image
+
+from config.integrations import status_manager
 from services.api.openai_api_services import get_text_response_with_context
 from services.database.conversation_database_services import save_conversation, get_conversation_list
 from services.database.user_database_services import get_user_language
@@ -14,11 +16,17 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-async def handle_photo(message: Message, bot: Bot) -> None:
+@status_manager.status_update_decorator({
+    "start": "Processing your photo...",
+    "download": "Downloading the photo...",
+    "extract": "Extracting the text from the photo...",
+    "final_request": "Preparing the final request...",
+    "generate": "Generating the response..."
+})
+async def handle_photo(message: Message, bot: Bot, status_context: dict) -> None:
     """Handle photo messages with OCR and send AI-generated responses."""
     # Initial setup
-    status_message = await message.reply("Processing your image...")
-    status_message_id = status_message.message_id
+    await status_context["update_status"]("start")
     telegram_id = message.from_user.id
     user_language = get_user_language(telegram_id)
     message_caption = message.caption or ""
@@ -30,20 +38,12 @@ async def handle_photo(message: Message, bot: Bot) -> None:
         path = f"media/photos/{photo.file_id}.jpg"
 
         # Download image
-        await bot.edit_message_text(
-            chat_id=telegram_id,
-            message_id=status_message_id,
-            text="Downloading the image..."
-        )
+        await status_context["update_status"]("download")
 
         await bot.download(photo, destination=path)
 
         # Extract text using OCR
-        await bot.edit_message_text(
-            chat_id=telegram_id,
-            message_id=status_message_id,
-            text="Extracting text from the photo..."
-        )
+        await status_context["update_status"]("extract")
 
         # Try primary OCR method
         try:
@@ -59,11 +59,7 @@ async def handle_photo(message: Message, bot: Bot) -> None:
                 extracted_text = ""
 
         # Prepare final request
-        await bot.edit_message_text(
-            chat_id=telegram_id,
-            message_id=status_message_id,
-            text="Preparing the final request..."
-        )
+        await status_context["update_status"]("final_request")
 
         # Final text processing
         final_text = extracted_text.strip() if extracted_text.strip() else ""
@@ -73,11 +69,7 @@ async def handle_photo(message: Message, bot: Bot) -> None:
             final_request_message += f"\n\n{message_caption}"
 
         # Generate response
-        await bot.edit_message_text(
-            chat_id=telegram_id,
-            message_id=status_message_id,
-            text="Generating response..."
-        )
+        await status_context["update_status"]("generate")
 
         # Save conversation and get context
         save_conversation(telegram_id, "user", final_request_message)
@@ -86,7 +78,7 @@ async def handle_photo(message: Message, bot: Bot) -> None:
         # Get and process response
         response_generator = get_text_response_with_context(conversation_list)
         assistant_response = await process_streaming_response(
-            message, status_message_id, response_generator, user_language
+            message, status_context["status_message_id"], response_generator, user_language
         )
 
         # Save assistant response

@@ -1,14 +1,10 @@
 import logging
 import sys
-
 from aiogram import Bot, Dispatcher
-from aiogram.enums import ParseMode
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
-
 from bot.bot import admin_router, user_router
 from bot.middlewares.auth_middleware import auth_middleware
-# from bot.middlewares.auth_middleware import auth_middleware
 from config.constants import (
     BASE_WEBHOOK_URL,
     WEBHOOK_PATH,
