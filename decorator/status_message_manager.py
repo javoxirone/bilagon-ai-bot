@@ -4,6 +4,9 @@ from typing import Callable, Any, Dict
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import Message
 
+from services.database.user_database_services import get_user_language
+from templates.message_templates import get_processing_message
+
 
 class StatusMessageManager:
     """Manages status messages for long-running operations with duplicate prevention."""
@@ -21,9 +24,9 @@ class StatusMessageManager:
         Execute a function with status updates at each defined step.
         """
         telegram_id = message.from_user.id
-
+        user_language = get_user_language(telegram_id)
         # Send initial status message
-        initial_status = list(status_steps.values())[0] if status_steps else "Processing..."
+        initial_status = list(status_steps.values())[0] if status_steps else get_processing_message(user_language)
         status_message = await message.reply(initial_status)
         status_message_id = status_message.message_id
 
@@ -52,8 +55,11 @@ class StatusMessageManager:
             if cache_key in self._status_cache:
                 del self._status_cache[cache_key]
 
-    def _create_status_updater(self, telegram_id: int, status_message_id: int, status_steps: Dict[str, str]):
+    def _create_status_updater(self, telegram_id: int, status_message_id: int, status_steps=None):
         """Creates a status update function for a specific message."""
+
+        if status_steps is None:
+            status_steps = {}
 
         async def update_status(step_name: str):
             # Convert step name to actual message text
@@ -62,7 +68,7 @@ class StatusMessageManager:
                 await self._safe_update_message(telegram_id, status_message_id, text)
             else:
                 # Handle unknown step names
-                await self._safe_update_message(telegram_id, status_message_id, f"Processing: {step_name}...")
+                await self._safe_update_message(telegram_id, status_message_id, step_name)
 
         return update_status
 
@@ -97,10 +103,13 @@ class StatusMessageManager:
                 # For other BadRequest errors, re-raise
                 raise
 
-    def status_update_decorator(self, status_steps: Dict[str, str]):
+    def status_update_decorator(self, status_steps=None):
         """
         Decorator that wraps a function with status updates.
         """
+
+        if status_steps is None:
+            status_steps = {}
 
         def decorator(func):
             @functools.wraps(func)

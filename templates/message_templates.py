@@ -348,3 +348,51 @@ def get_processing_text_message(lang):
         'en': 'Processing your text message...',
     }
     return message[lang]
+
+def get_processing_message(lang):
+    message = {
+        'uz': 'Qayta ishlanmoqda...',
+        'ru': 'Обработка...',
+        'en': 'Processing...',
+    }
+    return message[lang]
+
+def get_suggestions_message(lang):
+    message = {
+        'uz': 'Suhbatni davom ettirish uchun taklif qilingan savollardan birini tanlashingiz mumkin.',
+        'ru': 'Вы можете выбрать один из предложенных вопросов, чтобы продолжить разговор.',
+        'en': 'You can choose one of the suggested questions to continue the conversation.',
+    }
+    return message[lang]
+
+
+def get_no_suggestions_message(lang):
+    message = {
+        'uz': 'Hozircha hech qanday taklif yo\'q.',
+        'ru': 'На данный момент предложений нет.',
+        'en': 'There is no suggestions for now.',
+    }
+    return message[lang]
+
+def get_contribute_message(lang):
+    message = {
+        'uz': (
+            "Ochiq manba kodiga hissa qo'shish - bu dasturlash ko'nikmalaringizni oshirish va hamjamiyatga yordam berish uchun ajoyib imkoniyat. "
+            "Bilag'on loyihasiga qo'shiling va katta narsaning bir qismi bo'ling! Siz xatolarni tuzatish, yangi funksiyalar qo'shish yoki hujjatlarni yaxshilash orqali hissa qo'shishingiz mumkin.\n\n"
+            "Qo'shimcha ma'lumot va boshlash uchun bizning repozitoriyamizga tashrif buyuring: [Bilag'on on GitHub](https://github.com/javoxirone/bilagon-ai-bot). "
+            "Sizning g'oyalaringiz va sa'y-harakatlaringiz biz uchun muhim!"
+        ),
+        'ru': (
+            "Внесение вклада в открытый исходный код — это отличный способ улучшить свои навыки программирования и помочь сообществу. "
+            "Присоединяйтесь к проекту Bilag'on и станьте частью чего-то большего! Вы можете внести свой вклад, исправляя ошибки, добавляя новые функции или улучшая документацию.\n\n"
+            "Для получения дополнительной информации и начала работы, посетите наш репозиторий: [Bilag'on на GitHub](https://github.com/javoxirone/bilagon-ai-bot). "
+            "Ваши идеи и усилия важны для нас!"
+        ),
+        'en': (
+            "Contributing to open-source is a great way to enhance your programming skills and help the community. "
+            "Join the Bilag'on project and be part of something bigger! You can contribute by fixing bugs, adding new features, or improving documentation.\n\n"
+            "For more information and to get started, visit our repository: [Bilag'on on GitHub](https://github.com/javoxirone/bilagon-ai-bot). "
+            "Your ideas and efforts matter to us!"
+        ),
+    }
+    return message[lang]

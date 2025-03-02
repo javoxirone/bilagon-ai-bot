@@ -1,4 +1,5 @@
 from aiogram import types
+from aiogram.types import KeyboardButton
 
 
 def get_lang_keyboard():
@@ -24,7 +25,7 @@ def get_lang_keyboard():
 
 
 def get_new_chat_keyboard(lang):
-    buttons = {
+    new_chat_buttons = {
         "uz": types.InlineKeyboardButton(
             text="💬 Yangi suhbat 💬", callback_data='new_chat'
         ),
@@ -35,7 +36,18 @@ def get_new_chat_keyboard(lang):
             text="💬 New Chat 💬", callback_data='new_chat'
         ),
     }
-    button = [[buttons[lang]]]
+    suggestion_buttons = {
+        "uz": types.InlineKeyboardButton(
+            text="💡 takliflar 💡", callback_data='suggestions'
+        ),
+        "ru": types.InlineKeyboardButton(
+            text="💡 Предложения 💡", callback_data='suggestions'
+        ),
+        "en": types.InlineKeyboardButton(
+            text="💡 Suggestions 💡", callback_data='suggestions'
+        ),
+    }
+    button = [[new_chat_buttons[lang]], [suggestion_buttons[lang]]]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
     return keyboard
 
@@ -83,3 +95,5 @@ def get_gpt3_payment_keyboard(lang):
     button = [[buttons[lang]]]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
     return keyboard
+
+
