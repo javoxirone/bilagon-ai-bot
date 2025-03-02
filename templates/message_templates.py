@@ -27,9 +27,9 @@ def get_loading_message(lang: str) -> str:
 
 def get_new_chat_message(lang: str) -> str:
     message = {
-        "uz": "Botning xotirasidan oxirgi so'rovlaringiz o'chirildi. Endi, boshqa mavzuda savol suhbat boshlashingiz mumkin 😊",
-        "ru": "Бот стер память о вашем предыдущем запросе и его ответе. Теперь вы можете выбрать другую тему и начать новый чат 😊",
-        "en": "The bot has erased its memory of your previous request and its answer. You can now pick a different topic and start a new chat 😊",
+        "uz": "Botning xotirasidan oxirgi so'rovlaringiz o'chirildi. Endi, boshqa mavzuda savol suhbat boshlashingiz mumkin!",
+        "ru": "Бот стер память о вашем предыдущем запросе и его ответе. Теперь вы можете выбрать другую тему и начать новый чат!",
+        "en": "The bot has erased its memory of your previous request and its answer. You can now pick a different topic and start a new chat!",
     }
     return message[lang]
 
@@ -237,5 +237,162 @@ def get_bot_error_message(lang):
     return message[lang]
 
 
+def get_chat_mode_message(lang):
+    message = {
+        'uz': "Bot ixtisoslashishini xohlagan suhbat rejimini tanlang.",
+        'ru': "Выберите режим чата, в котором бот будет специализироваться.",
+        'en': "Select the chat mode you want the bot to specialize in."
+    }
+    return message[lang]
 
 
+def get_processing_voice_message(lang):
+    message = {
+        'uz': 'Ovozli xabaringiz qayta ishlanmoqda...',
+        'ru': 'Обработка вашего голосового сообщения...',
+        'en': 'Processing your voice message...',
+    }
+    return message[lang]
+
+
+def get_downloading_voice_message(lang):
+    message = {
+        'uz': 'Ovozli xabar yuklab olinmoqda...',
+        'ru': 'Загрузка голосового сообщения...',
+        'en': 'Downloading the voice message...',
+    }
+    return message[lang]
+
+
+def get_transcribing_voice_message(lang):
+    message = {
+        'uz': 'Ovozli xabaringiz transkripsiya qilinmoqda...',
+        'ru': 'Транскрибация вашего голосового сообщения...',
+        'en': 'Transcribing your voice message...',
+    }
+    return message[lang]
+
+
+def get_generating_response_message(lang):
+    message = {
+        'uz': 'Javob yaratilmoqda...',
+        'ru': 'Формирование ответа...',
+        'en': 'Generating the response...',
+    }
+    return message[lang]
+
+
+def get_processing_photo_message(lang):
+    message = {
+        'uz': 'Surat qayta ishlanmoqda...',
+        'ru': 'Обработка фото...',
+        'en': 'Processing your photo...',
+    }
+    return message[lang]
+
+
+def get_downloading_photo_message(lang):
+    message = {
+        'uz': 'Surat yuklab olinmoqda...',
+        'ru': 'Загружаю фото...',
+        'en': 'Downloading the photo...',
+    }
+    return message[lang]
+
+
+def get_extracting_text_from_photo_message(lang):
+    message = {
+        'uz': 'Suratdan matn olinmoqda...',
+        'ru': 'Извлечение текста из фотографии...',
+        'en': 'Extracting the text from the photo...',
+    }
+    return message[lang]
+
+
+def get_final_request_message(lang):
+    message = {
+        'uz': 'Yakuniy so‘rov tayyorlanmoqda...',
+        'ru': 'Подготовка окончательного запроса...',
+        'en': 'Preparing the final request...',
+    }
+    return message[lang]
+
+def get_processing_document_message(lang):
+    message = {
+        'uz': 'Hujjatingiz qayta ishlanmoqda...',
+        'ru': 'Обработка вашего документа...',
+        'en': 'Processing your document...',
+    }
+    return message[lang]
+
+def get_downloading_document_message(lang):
+    message = {
+        'uz': 'Hujjat yuklab olinmoqda...',
+        'ru': 'Загрузка документа...',
+        'en': 'Downloading the document...',
+    }
+    return message[lang]
+
+def get_parsing_content_message(lang):
+    message = {
+        'uz': 'Kontent tahlil qilinmoqda...',
+        'ru': 'Анализ содержимого...',
+        'en': 'Parsing the content...',
+    }
+    return message[lang]
+
+def get_processing_text_message(lang):
+    message = {
+        'uz': 'Matnli xabaringiz qayta ishlanmoqda...',
+        'ru': 'Обработка вашего текстового сообщения...',
+        'en': 'Processing your text message...',
+    }
+    return message[lang]
+
+def get_processing_message(lang):
+    message = {
+        'uz': 'Qayta ishlanmoqda...',
+        'ru': 'Обработка...',
+        'en': 'Processing...',
+    }
+    return message[lang]
+
+def get_suggestions_message(lang):
+    message = {
+        'uz': 'Suhbatni davom ettirish uchun taklif qilingan savollardan birini tanlashingiz mumkin.',
+        'ru': 'Вы можете выбрать один из предложенных вопросов, чтобы продолжить разговор.',
+        'en': 'You can choose one of the suggested questions to continue the conversation.',
+    }
+    return message[lang]
+
+
+def get_no_suggestions_message(lang):
+    message = {
+        'uz': 'Hozircha hech qanday taklif yo\'q.',
+        'ru': 'На данный момент предложений нет.',
+        'en': 'There is no suggestions for now.',
+    }
+    return message[lang]
+
+def get_contribute_message(lang):
+    message = {
+        'uz': (
+            "Ochiq manba kodiga hissa qo'shish - bu dasturlash ko'nikmalaringizni oshirish va hamjamiyatga yordam berish uchun ajoyib imkoniyat. "
+            "Bilag'on loyihasiga qo'shiling va katta narsaning bir qismi bo'ling! Siz xatolarni tuzatish, yangi funksiyalar qo'shish yoki hujjatlarni yaxshilash orqali hissa qo'shishingiz mumkin.\n\n"
+            "Qo'shimcha ma'lumot va boshlash uchun bizning repozitoriyamizga tashrif buyuring: [Bilag'on on GitHub](https://github.com/javoxirone/bilagon-ai-bot). "
+            "Sizning g'oyalaringiz va sa'y-harakatlaringiz biz uchun muhim!"
+        ),
+        'ru': (
+            "Внесение вклада в открытый исходный код — это отличный способ улучшить свои навыки программирования и помочь сообществу. "
+            "Присоединяйтесь к проекту Bilag'on и станьте частью чего-то большего! Вы можете внести свой вклад, исправляя ошибки, добавляя новые функции или улучшая документацию.\n\n"
+            "Для получения дополнительной информации и начала работы, посетите наш репозиторий: [Bilag'on на GitHub](https://github.com/javoxirone/bilagon-ai-bot). "
+            "Ваши идеи и усилия важны для нас!"
+        ),
+        'en': (
+            "Contributing to open-source is a great way to enhance your programming skills and help the community. "
+            "Join the Bilag'on project and be part of something bigger! You can contribute by fixing bugs, adding new features, or improving documentation.\n\n"
+            "For more information and to get started, visit our repository: [Bilag'on on GitHub](https://github.com/javoxirone/bilagon-ai-bot). "
+            "Your ideas and efforts matter to us!"
+        ),
+    }
+    return message[lang]
