@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 from aiogram import Bot, Dispatcher
@@ -42,6 +43,7 @@ def main() -> None:
     logger.info("Starting bot application...")
 
     bot = Bot(token=BOT_TOKEN)
+    asyncio.run(on_startup(bot))
     dp = Dispatcher()
     dp.include_router(user_router)
     dp.include_router(admin_router)
