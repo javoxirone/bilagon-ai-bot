@@ -261,4 +261,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
 
-For questions or issues, please open an issue on the [GitHub repository](https://github.com/javoxirone/bilagon-ai-bot).
+For questions or issues, please open an issue on the [GitHub repository](https://github.com/javoxirone/bilagon-ai-bot). Additionally, you can contact the author of the project through email javoxirone@gmail.com or through [Telegram](https://t.me/javoxirone/).
