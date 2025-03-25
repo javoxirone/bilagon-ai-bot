@@ -3,11 +3,13 @@ from typing import BinaryIO
 
 from config.integrations import text_processor, audio_processor
 from services.database.conversation_database_services import get_conversation_list
-from services.database.user_database_services import get_user_language
+from services.database.user_database_services import get_user_language, get_user_model_name
 
 
-def get_text_response(context: list, user_language: str = "en"):
+def get_text_response(telegram_id: int, context: list, user_language: str = "en"):
+    user_model_name = get_user_model_name(telegram_id)
     stream = text_processor.generate_text_response(
+        model=user_model_name,
         messages=[{
             "role": "developer",
             "content": (
@@ -27,15 +29,15 @@ def get_text_response(context: list, user_language: str = "en"):
     return stream
 
 
-def get_text_response_in_incognito_mode(user_message: str, user_language: str = "en"):
-    stream = get_text_response([{"role": "user", "content": user_message}], user_language)
+def get_text_response_in_incognito_mode(telegram_id: int, user_message: str, user_language: str = "en"):
+    stream = get_text_response(telegram_id, [{"role": "user", "content": user_message}], user_language)
     for chunk in stream:
         if chunk.choices[0].delta.content is not None and chunk.choices[0].delta.content != "":
             yield chunk.choices[0].delta.content
 
 
-def get_text_response_with_context(conversation_list: list, user_language: str = "en"):
-    stream = get_text_response(conversation_list, user_language)
+def get_text_response_with_context(telegram_id: int, conversation_list: list, user_language: str = "en"):
+    stream = get_text_response(telegram_id, conversation_list, user_language)
     for chunk in stream:
         if chunk.choices[0].delta.content is not None and chunk.choices[0].delta.content != "":
             yield chunk.choices[0].delta.content

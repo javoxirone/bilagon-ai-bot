@@ -9,6 +9,7 @@ class UserDataType(TypedDict):
     last_name: str
     created_at: str
     language: str
+    saved_conversation_mode: bool
 
 
 class ConversationDataType(TypedDict):

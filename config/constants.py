@@ -11,6 +11,7 @@ MESSAGE_COMPLETION_CURSOR: str = " ▌"
 # External API constants
 OPENAI_API_KEY: str = os.getenv('OPENAI_API_KEY')
 OPENAI_BASE_URL: str = os.getenv('OPENAI_BASE_URL')
+MODEL_LIST: list = ['gpt-4o-mini', 'gpt-3.5-turbo']
 
 # Webhook constants
 WEB_SERVER_HOST: str = os.getenv('WEB_SERVER_HOST')

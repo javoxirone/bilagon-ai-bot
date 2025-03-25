@@ -149,25 +149,31 @@ def get_gpt3_payment_successful_message(lang: str) -> str:
     return message[lang]
 
 
-def get_settings_command_message(tariff, requests_num, expiration_date, lang):
+def get_settings_command_message(telegram_id: int, lang: str, saved_conversation_mode: bool, model_name: str) -> str:
+    incognito_mode_message = {
+        "uz": ("Yoqilgan 🫥", "O'chirilgan"),
+        "ru": ("Включен 🫥", "Выключен"),
+        "en": ("Active 🫥", "Inactive")
+    }
+    incognito_mode = incognito_mode_message[lang][1] if saved_conversation_mode else incognito_mode_message[lang][0]
     message = {
-        'uz': f"Tarif: <b>{tariff}</b>\n"
-              f"So'rovlar soni: <b>{requests_num}</b>\n"
-              f"Tugash vaqti: <b>{expiration_date}</b>\n"
-              f"Botning tili: <b>{lang}</b>\n\n"
-              f"<b>Bilag'on AI Bot do'stlaringizga ulashing!</b>",
+        'uz': f"Telegram ID: <b>{telegram_id}</b>\n"
+              f"Botning tili: <b>{lang}</b>\n"
+              f"Inkognito rejimi: <b>{incognito_mode}</b>\n"
+              f"Suniy Idrok modeli: <b>{model_name}</b>\n\n"
+              f"<b>\"Bilag'on\"ni  do'stlaringiz bilan ulashing!</b>",
 
-        'ru': f"Тариф: <b>{tariff}</b>\n"
-              f"Количество запросов: <b>{requests_num}</b>\n"
-              f"Дата окончания: <b>{expiration_date}</b>\n"
-              f"Язык бота: <b>{lang}</b>\n\n"
-              f"<b>Поделитесь Bilag'on AI Bot с друзьями!</b>",
+        'ru': f"Telegram ID: <b>{telegram_id}</b>\n"
+              f"Язык бота: <b>{lang}</b>\n"
+              f"Режим инкогнито: <b>{incognito_mode}</b>\n"
+              f"Модель ИИ: <b>{model_name}</b>\n\n"
+              f"<b>Поделитесь Bilag'on с друзьями!</b>",
 
-        'en': f"Tariff: <b>{tariff}</b>\n"
-              f"Number of requests: <b>{requests_num}</b>\n"
-              f"Expiration date: <b>{expiration_date}</b>\n"
-              f"Bot Language: <b>{lang}</b>\n\n"
-              f"<b>Share Bilag'on AI Bot with friends!</b>"
+        'en': f"Telegram ID: <b>{telegram_id}</b>\n"
+              f"Bot Language: <b>{lang}</b>\n"
+              f"Incognito mode: <b>{incognito_mode}</b>\n"
+              f"AI model: <b>{model_name}</b>\n\n"
+              f"<b>Share Bilag'on with friends!</b>"
     }
     return message[lang]
 
@@ -317,6 +323,7 @@ def get_final_request_message(lang):
     }
     return message[lang]
 
+
 def get_processing_document_message(lang):
     message = {
         'uz': 'Hujjatingiz qayta ishlanmoqda...',
@@ -324,6 +331,7 @@ def get_processing_document_message(lang):
         'en': 'Processing your document...',
     }
     return message[lang]
+
 
 def get_downloading_document_message(lang):
     message = {
@@ -333,6 +341,7 @@ def get_downloading_document_message(lang):
     }
     return message[lang]
 
+
 def get_parsing_content_message(lang):
     message = {
         'uz': 'Kontent tahlil qilinmoqda...',
@@ -340,6 +349,7 @@ def get_parsing_content_message(lang):
         'en': 'Parsing the content...',
     }
     return message[lang]
+
 
 def get_processing_text_message(lang):
     message = {
@@ -349,6 +359,7 @@ def get_processing_text_message(lang):
     }
     return message[lang]
 
+
 def get_processing_message(lang):
     message = {
         'uz': 'Qayta ishlanmoqda...',
@@ -356,6 +367,7 @@ def get_processing_message(lang):
         'en': 'Processing...',
     }
     return message[lang]
+
 
 def get_suggestions_message(lang):
     message = {
@@ -373,6 +385,7 @@ def get_no_suggestions_message(lang):
         'en': 'There is no suggestions for now.',
     }
     return message[lang]
+
 
 def get_contribute_message(lang):
     message = {
@@ -394,5 +407,23 @@ def get_contribute_message(lang):
             "For more information and to get started, visit our repository: [Bilag'on on GitHub](https://github.com/javoxirone/bilagon-ai-bot). "
             "Your ideas and efforts matter to us!"
         ),
+    }
+    return message[lang]
+
+
+def get_activated_context_message(lang):
+    message = {
+        'uz': 'Kontekst hozirda faollashtirildi. Endi yordamchi suhbat tarixini saqlaydi va yangi suhbat boshlangunga qadar umumiy suhbat kontekstni tushunadi.',
+        'ru': 'Контекст теперь активирован. С этого момента помощник будет сохранять историю беседы и понимать общий контекст до начала нового чата.',
+        'en': 'The context is now activated. From this moment on, the assistant will retain the conversation history and comprehend the overall context until a new chat is initiated.',
+    }
+    return message[lang]
+
+
+def get_models_message(lang):
+    message = {
+        'uz': 'Quyida t\'o\'gri keladigan suniy idrok modelini tanlang:',
+        'ru': 'Выберите одну из подходящих моделей ИИ ниже:',
+        'en': 'Please select one of the appropriate AI models below:'
     }
     return message[lang]

@@ -24,7 +24,7 @@ def get_lang_keyboard():
     return keyboard
 
 
-def get_new_chat_keyboard(lang):
+def get_message_keyboard(lang):
     new_chat_buttons = {
         "uz": types.InlineKeyboardButton(
             text="💬 Yangi suhbat 💬", callback_data='new_chat'
@@ -38,7 +38,7 @@ def get_new_chat_keyboard(lang):
     }
     suggestion_buttons = {
         "uz": types.InlineKeyboardButton(
-            text="💡 takliflar 💡", callback_data='suggestions'
+            text="💡 Takliflar 💡", callback_data='suggestions'
         ),
         "ru": types.InlineKeyboardButton(
             text="💡 Предложения 💡", callback_data='suggestions'
@@ -47,36 +47,99 @@ def get_new_chat_keyboard(lang):
             text="💡 Suggestions 💡", callback_data='suggestions'
         ),
     }
+
     button = [[new_chat_buttons[lang]], [suggestion_buttons[lang]]]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
     return keyboard
 
 
-def get_chat_mode_keyboard(lang):
-    regular_chat_buttons = {
+def get_incognito_message_keyboard(lang):
+    context_buttons = {
         "uz": types.InlineKeyboardButton(
-            text="Odatiy", callback_data='regular_chat'
+            text="💾 Kontekstni yoqish 💾", callback_data='activate_context'
         ),
         "ru": types.InlineKeyboardButton(
-            text="Обычный", callback_data='regular_chat'
+            text="💾 Включить контекст 💾", callback_data='activate_context'
         ),
         "en": types.InlineKeyboardButton(
-            text="Regular", callback_data='regular_chat'
+            text="💾 Activate context 💾", callback_data='activate_context'
         ),
     }
-    scientific_chat_buttons = {
-        "uz": types.InlineKeyboardButton(
-            text="Ilmiy", callback_data='scientific_chat'
-        ),
-        "ru": types.InlineKeyboardButton(
-            text="Научный", callback_data='scientific_chat'
-        ),
-        "en": types.InlineKeyboardButton(
-            text="Scientific", callback_data='scientific_chat'
-        ),
-    }
-    button = [[regular_chat_buttons[lang], scientific_chat_buttons[lang]]]
+    button = [[context_buttons[lang]]]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
+    return keyboard
+
+
+def get_settings_keyboard(lang):
+    conversation_mode_buttons = {
+        "uz": types.InlineKeyboardButton(
+            text="Suhbat rejimini almashtirish", callback_data='toggle_saved_conversation_mode'
+        ),
+        "ru": types.InlineKeyboardButton(
+            text="Переключить режим разговора", callback_data='toggle_saved_conversation_mode'
+        ),
+        "en": types.InlineKeyboardButton(
+            text="Switch conversation mode", callback_data='toggle_saved_conversation_mode'
+        ),
+    }
+    switch_language_keyboard = {
+        "uz": types.InlineKeyboardButton(
+            text="Botning tilini almashtirish", callback_data='switch_language'
+        ),
+        "ru": types.InlineKeyboardButton(
+            text="Переключить язык бота", callback_data='switch_language'
+        ),
+        "en": types.InlineKeyboardButton(
+            text="Switch bot language", callback_data='switch_language'
+        ),
+    }
+    switch_model_keyboard = {
+        "uz": types.InlineKeyboardButton(
+            text="Suniy idrok modelini almashtirish", callback_data='switch_model'
+        ),
+        "ru": types.InlineKeyboardButton(
+            text="Выбрать другую модель ИИ", callback_data='switch_model'
+        ),
+        "en": types.InlineKeyboardButton(
+            text="Switch AI model", callback_data='switch_model'
+        ),
+    }
+    new_chat_buttons = {
+        "uz": types.InlineKeyboardButton(
+            text="Suhbat tarixini tozalash", callback_data='new_chat'
+        ),
+        "ru": types.InlineKeyboardButton(
+            text="Очистить историю разговора", callback_data='new_chat'
+        ),
+        "en": types.InlineKeyboardButton(
+            text="Clear conversation history", callback_data='new_chat'
+        ),
+    }
+    button = [[conversation_mode_buttons[lang]], [switch_language_keyboard[lang]], [switch_model_keyboard[lang]],
+              [new_chat_buttons[lang]]]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
+    return keyboard
+
+
+def build_models_keyboard(models, selected_model) -> types.InlineKeyboardMarkup:
+    """
+    Generate an inline keyboard from a list of model names.
+
+    :param models: List of model names to create buttons for.
+    :type models: list[str]
+
+    :param selected_model: Selected model name.
+    :type selected_model: str
+
+    :return: Inline keyboard markup
+    :rtype: types.InlineKeyboardMarkup
+    """
+    buttons = [
+        [types.InlineKeyboardButton(text=model + " ✔️" if model == selected_model else model, callback_data=model)]
+        for model in models
+    ]
+
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
 
@@ -95,5 +158,3 @@ def get_gpt3_payment_keyboard(lang):
     button = [[buttons[lang]]]
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=button)
     return keyboard
-
-
