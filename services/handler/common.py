@@ -1,4 +1,4 @@
-from services.api.openai_api_services import get_text_response_with_context, get_text_response_in_incognito_mode
+from services.sdk.openai_sdk_services import get_text_response_with_context, get_text_response_in_incognito_mode
 from services.database.conversation_database_services import save_conversation, get_conversation_list
 from services.database.user_database_services import get_user_language
 from services.handler.text_handler_services import process_streaming_response

@@ -2,12 +2,10 @@ from aiogram import Bot
 from aiogram.types import Message
 
 from config.integrations import status_manager
-from services.api.openai_api_services import get_transcription_of_audio, get_text_response_with_context
+from services.sdk.openai_sdk_services import get_transcription_of_audio
 from services.api.telegram_api_services import download_voice_file
-from services.database.conversation_database_services import save_conversation, get_conversation_list
 from services.database.user_database_services import get_user_language
 from services.handler.common import handle_saved_conversation
-from services.handler.text_handler_services import process_streaming_response
 from tasks import delete_handled_file
 from templates.message_templates import get_downloading_voice_message, get_transcribing_voice_message, \
     get_generating_response_message, get_processing_voice_message

@@ -1,7 +1,7 @@
 from aiogram import Bot
 
-from api.openai.processors.audio import AudioProcessor
-from api.openai.processors.text import TextProcessor
+from sdk.openai.processors.audio import AudioProcessor
+from sdk.openai.processors.text import TextProcessor
 from config.constants import OPENAI_API_KEY, OPENAI_BASE_URL, BOT_TOKEN
 from decorator.status_message_manager import StatusMessageManager
 from parser.document import DocumentParser

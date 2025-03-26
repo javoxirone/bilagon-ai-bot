@@ -1,4 +1,4 @@
-from api.openai.base import OpenAIAPIBase
+from sdk.openai.base import OpenAIAPIBase
 from exceptions.api import APIServerError
 
 

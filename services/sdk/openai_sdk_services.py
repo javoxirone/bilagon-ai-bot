@@ -7,6 +7,21 @@ from services.database.user_database_services import get_user_language, get_user
 
 
 def get_text_response(telegram_id: int, context: list, user_language: str = "en"):
+    """
+    Generates text response in stream format and returns it.
+
+    :param telegram_id: Unique Telegram ID is used to get the preferred user's AI model.
+    :type telegram_id: int
+
+    :param context: The list of content from user and assistant
+    :type context: list
+
+    :param user_language: Preferred user language.
+    :type user_language: str
+
+    :return: Text response from assistant in stream format.
+    :rtype: Generator
+    """
     user_model_name = get_user_model_name(telegram_id)
     stream = text_processor.generate_text_response(
         model=user_model_name,

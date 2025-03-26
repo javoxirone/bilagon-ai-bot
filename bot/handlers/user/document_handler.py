@@ -3,12 +3,9 @@ import os
 from aiogram.types import Message
 
 from config.integrations import document_parser, status_manager
-from services.api.openai_api_services import get_text_response_with_context
 from services.api.telegram_api_services import download_document_file
-from services.database.conversation_database_services import save_conversation, get_conversation_list
 from services.database.user_database_services import get_user_language
 from services.handler.common import handle_saved_conversation
-from services.handler.text_handler_services import process_streaming_response
 from tasks import delete_handled_file
 from templates.message_templates import get_final_request_message, get_processing_document_message, \
     get_downloading_document_message, get_parsing_content_message, get_generating_response_message

@@ -3,7 +3,9 @@ from aiogram.filters import Command
 
 from bot.handlers.user.callback_handlers import process_callback_new_chat, process_callback_uz_lang, \
     process_callback_ru_lang, process_callback_en_lang, process_callback_suggestions, process_callback_activate_context, \
-    process_toggle_saved_conversation_mode, process_switch_language, process_switch_model, process_model_selection
+    process_toggle_saved_conversation_mode, process_switch_language, process_switch_model, process_model_selection, \
+    process_callback_intro_uz_lang, process_callback_intro_ru_lang, process_callback_intro_en_lang, \
+    process_callback_back_to_settings
 from bot.handlers.user.command_handlers import command_start_handler, command_help_handler, \
     command_donate_handler, command_examples_handler, command_contribute_handler, command_settings_handler
 from bot.handlers.user.document_handler import handle_document
@@ -24,9 +26,13 @@ user_router.message.register(command_contribute_handler, Command("contribute"))
 user_router.callback_query.register(process_callback_uz_lang, lambda c: c.data == "lang_uz")
 user_router.callback_query.register(process_callback_ru_lang, lambda c: c.data == "lang_ru")
 user_router.callback_query.register(process_callback_en_lang, lambda c: c.data == "lang_en")
+user_router.callback_query.register(process_callback_intro_uz_lang, lambda c: c.data == "intro_lang_uz")
+user_router.callback_query.register(process_callback_intro_ru_lang, lambda c: c.data == "intro_lang_ru")
+user_router.callback_query.register(process_callback_intro_en_lang, lambda c: c.data == "intro_lang_en")
 user_router.callback_query.register(process_callback_new_chat, lambda c: c.data == "new_chat")
 user_router.callback_query.register(process_callback_suggestions, lambda c: c.data == "suggestions")
 user_router.callback_query.register(process_callback_activate_context, lambda c: c.data == "activate_context")
+user_router.callback_query.register(process_callback_back_to_settings, lambda c: c.data == "back_to_settings")
 user_router.callback_query.register(process_switch_language, lambda c: c.data == "switch_language")
 user_router.callback_query.register(process_switch_model, lambda c: c.data == "switch_model")
 user_router.callback_query.register(process_model_selection, lambda c: c.data == "gpt-4o-mini")

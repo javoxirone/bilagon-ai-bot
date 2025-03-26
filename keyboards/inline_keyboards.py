@@ -2,24 +2,46 @@ from aiogram import types
 from aiogram.types import KeyboardButton
 
 
-def get_lang_keyboard():
+def get_intro_lang_keyboard():
     buttons = [
         [
             types.InlineKeyboardButton(
-                text="🇺🇿 O'zbekcha", callback_data='lang_uz'
+                text="🇺🇿 O'zbekcha", callback_data='intro_lang_uz'
             )
         ],
         [
             types.InlineKeyboardButton(
-                text="🇷🇺 Русский", callback_data='lang_ru'
+                text="🇷🇺 Русский", callback_data='intro_lang_ru'
             )
         ],
         [
             types.InlineKeyboardButton(
-                text="🇺🇸 English", callback_data='lang_en'
+                text="🇺🇸 English", callback_data='intro_lang_en'
             )
         ],
     ]
+    keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
+
+def get_lang_keyboard(lang: str):
+    buttons = [
+                  [
+                      types.InlineKeyboardButton(
+                          text="🇺🇿 O'zbekcha", callback_data='lang_uz'
+                      )
+                  ],
+                  [
+                      types.InlineKeyboardButton(
+                          text="🇷🇺 Русский", callback_data='lang_ru'
+                      )
+                  ],
+                  [
+                      types.InlineKeyboardButton(
+                          text="🇺🇸 English", callback_data='lang_en'
+                      )
+                  ],
+              ] + get_back_keyboard_buttons(lang)
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
@@ -121,23 +143,45 @@ def get_settings_keyboard(lang):
     return keyboard
 
 
-def build_models_keyboard(models, selected_model) -> types.InlineKeyboardMarkup:
-    """
-    Generate an inline keyboard from a list of model names.
+def get_back_keyboard_buttons(lang):
+    back_buttons = {
+        "uz": types.InlineKeyboardButton(
+            text="⬅️ Orqaga", callback_data='back_to_settings'
+        ),
+        "ru": types.InlineKeyboardButton(
+            text="⬅️ Назад", callback_data='back_to_settings'
+        ),
+        "en": types.InlineKeyboardButton(
+            text="⬅️ Back", callback_data='back_to_settings'
+        ),
+    }
+    keyboard_buttons = [[back_buttons[lang]]]
+    return keyboard_buttons
 
-    :param models: List of model names to create buttons for.
-    :type models: list[str]
+
+def build_models_keyboard(models: dict, selected_model: str, lang: str) -> types.InlineKeyboardMarkup:
+    """
+    Generate an inline keyboard from a dictionary of model names and descriptions.
+
+    :param models: Dictionary of model names with their descriptions.
+    :type models: dict
 
     :param selected_model: Selected model name.
     :type selected_model: str
+
+    :param lang: Language of the user.
+    :type lang: str
 
     :return: Inline keyboard markup
     :rtype: types.InlineKeyboardMarkup
     """
     buttons = [
-        [types.InlineKeyboardButton(text=model + " ✔️" if model == selected_model else model, callback_data=model)]
-        for model in models
-    ]
+                  [types.InlineKeyboardButton(
+                      text=f"{model_name} ({model_description})" + (" ✔️" if model_name == selected_model else ""),
+                      callback_data=model_name
+                  )]
+                  for model_name, model_description in models.items()
+              ] + get_back_keyboard_buttons(lang)
 
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard

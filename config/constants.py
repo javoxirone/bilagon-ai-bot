@@ -11,7 +11,42 @@ MESSAGE_COMPLETION_CURSOR: str = " ▌"
 # External API constants
 OPENAI_API_KEY: str = os.getenv('OPENAI_API_KEY')
 OPENAI_BASE_URL: str = os.getenv('OPENAI_BASE_URL')
-MODEL_LIST: list = ['gpt-4o-mini', 'gpt-3.5-turbo']
+MODELS = {
+    'gpt-4o-mini': 'Fast, smart, general use',
+    'gpt-3.5-turbo': 'Balanced, chat, coding, writing',
+    'gemini-2.0-flash': 'Ultra-fast, real-time responses',
+    'gemini-1.5-flash': 'Fast, automation, quick replies',
+    'gemini-1.5-pro': 'Smarter, reasoning, complex tasks',
+    'deepseek-chat': 'Coming soon',
+    'deepseek-reasoner': 'Coming soon',
+    '1o-mini': 'Coming soon',
+    '3o-mini': 'Coming soon',
+    '3o': 'Coming soon',
+    '1o': 'Coming soon',
+    'gpt-4o': 'Coming soon',
+    'grok-2-1212': 'Coming soon',
+}
+# 'deepseek-chat': 'General AI, conversations, queries',
+# 'deepseek-reasoner': 'Strong logic, problem-solving',
+# '1o-mini': 'Lightweight, simple, fast tasks',
+# '3o-mini': 'Small, general-purpose AI',
+# '3o': 'Balanced, coding, reasoning',
+# '1o': 'Compact, basic problem-solving',
+# 'gpt-4o': 'Advanced, multimodal, high intelligence',
+# 'grok-2-1212': 'Research, reasoning, technical use',
+MODEL_LIST: tuple = (
+    'gpt-4o-mini',
+    'gpt-3.5-turbo',
+    'gemini-2.0-flash',
+    'gemini-1.5-flash',
+    'gemini-1.5-pro',
+    '1o-mini',
+    '3o-mini',
+    '3o',
+    '1o',
+    'gpt-4o',
+    'grok-2-1212',
+)
 
 # Webhook constants
 WEB_SERVER_HOST: str = os.getenv('WEB_SERVER_HOST')

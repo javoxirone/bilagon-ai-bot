@@ -1,3 +1,6 @@
+from config.constants import MODELS
+
+
 def get_start_command_message(lang: str) -> str:
     message = {
         "uz": "Bilag'on bo'tiga xush kelibsiz. Savolingizni berishingiz mumkin va men javob berishga harakat qilaman!",
@@ -427,3 +430,37 @@ def get_models_message(lang):
         'en': 'Please select one of the appropriate AI models below:'
     }
     return message[lang]
+
+
+def get_models(lang: str):
+    translations = {
+        'en': {
+            'Fast, smart, general use': 'Fast, smart, general use',
+            'Balanced, chat, coding, writing': 'Balanced, chat, coding, writing',
+            'Ultra-fast, real-time responses': 'Ultra-fast, real-time responses',
+            'Fast, automation, quick replies': 'Fast, automation, quick replies',
+            'Smarter, reasoning, complex tasks': 'Smarter, reasoning, complex tasks',
+            'Coming soon': 'Coming soon'
+        },
+        'uz': {
+            'Fast, smart, general use': 'Tez, aqlli, umumiy foydalanish',
+            'Balanced, chat, coding, writing': 'Muvozanatli, chat, dasturlash, yozish',
+            'Ultra-fast, real-time responses': 'Juda tez, real vaqt javoblari',
+            'Fast, automation, quick replies': 'Tez, avtomatlashtirish, tezkor javoblar',
+            'Smarter, reasoning, complex tasks': 'Aqlliroq, tahlil, murakkab vazifalar',
+            'Coming soon': 'Tez orada'
+        },
+        'ru': {
+            'Fast, smart, general use': 'Быстрый, умный, универсальный',
+            'Balanced, chat, coding, writing': 'Сбалансированный, чат, кодинг, написание',
+            'Ultra-fast, real-time responses': 'Сверхбыстрые ответы в реальном времени',
+            'Fast, automation, quick replies': 'Быстро, автоматизация, быстрые ответы',
+            'Smarter, reasoning, complex tasks': 'Умнее, анализ, сложные задачи',
+            'Coming soon': 'Скоро'
+        }
+    }
+
+    if lang not in translations:
+        lang = 'en'  # Default to English if the language is not supported
+
+    return {model: translations[lang][desc] for model, desc in MODELS.items()}
